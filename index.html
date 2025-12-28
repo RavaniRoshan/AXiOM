@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AXIOM-ONE | Research-Grade Reasoning</title>
+    
+    <!-- Favicon: Resolves 404 error -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23111827'/%3E%3Ctext x='50' y='55' fill='%23FFFFFF' font-family='monospace' font-size='60' text-anchor='middle' dominant-baseline='middle' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
+
+    <script>
+        // Optional: Suppress Tailwind CDN warning to keep console clean in this environment
+        const originalWarn = console.warn;
+        console.warn = (...args) => {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            originalWarn(...args);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
