@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXIOM-ONE | Research-Grade Reasoning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode (High Contrast) */
+            --bg-primary: #F4F6F8;
+            --bg-surface: #FFFFFF;
+            --border-primary: #D1D5DB; /* Darker border for visibility */
+            --accent-primary: #000000; /* Black for primary actions in light mode */
+            --accent-secondary: #0070F3; /* Blue for highlights */
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --grid-line: rgba(0, 0, 0, 0.06);
+        }
+
+        .dark {
+            /* Dark Mode */
+            --bg-primary: #0A0A0A;
+            --bg-surface: #111111;
+            --border-primary: #2A2A2A;
+            --accent-primary: #EDEDED; /* White/Off-white for primary actions */
+            --accent-secondary: #3291FF; /* Light Blue */
+            --text-primary: #EDEDED;
+            --text-secondary: #888888;
+            --glass-bg: rgba(10, 10, 10, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-card: none;
+            --grid-line: rgba(255, 255, 255, 0.04);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.4s ease;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .font-serif-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .grid-bg {
+            background-image: 
+                linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-morphism {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* Custom Card Style */
+        .card-base {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-primary);
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .card-base:hover {
+            border-color: var(--accent-secondary);
+        }
+
+        /* Custom Button Style */
+        .btn-axiom {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary); /* Invert text color based on background */
+            transition: all 0.2s ease;
+        }
+        .btn-axiom:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .btn-axiom:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-capsule {
+            border-radius: 9999px;
+            padding: 4px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 10px;
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                primary: 'var(--bg-primary)',
+                surface: 'var(--bg-surface)',
+                border: 'var(--border-primary)',
+                text: 'var(--text-primary)',
+                'text-secondary': 'var(--text-secondary)',
+                'accent-main': 'var(--accent-primary)',
+                'accent-highlight': 'var(--accent-secondary)',
+              }
+            }
+          }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+  }
+}
+</script>
+</head>
+<body class="grid-bg">
+    <div id="root"></div>
+    <script>
+      // Register GSAP plugins globally
+      if (window.gsap && window.ScrollTrigger) {
+        window.gsap.registerPlugin(window.ScrollTrigger);
+      }
+    </script>
+</body>
+</html>
