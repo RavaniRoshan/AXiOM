@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { GrainGradient, DotGrid, Metaballs } from '@paper-design/shaders-react';
 
 // --- Utility Components ---
 
@@ -31,7 +32,7 @@ const Button = ({
   const base = "px-6 py-2.5 rounded-full font-semibold transition-all duration-200 text-sm flex items-center justify-center gap-2 tracking-tight";
   const styles = {
     primary: "btn-axiom shadow-lg shadow-accent-main/10", 
-    secondary: "bg-surface border border-border text-text hover:border-accent-highlight hover:text-accent-highlight",
+    secondary: "glass-morphism border border-border text-text hover:border-accent-highlight hover:text-accent-highlight",
     ghost: "bg-transparent text-text-secondary hover:text-text hover:bg-surface/50"
   };
   return (
@@ -63,7 +64,7 @@ const CapabilityCard = ({
   className?: string
 }) => {
   return (
-    <div className={`capability-card group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-surface transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 ${className}`}>
+    <div className={`capability-card group relative flex flex-col overflow-hidden rounded-3xl glass-morphism shadow-lg transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 ${className}`}>
       {/* Visual Header */}
       <div className="relative h-64 w-full overflow-hidden bg-primary/50">
          <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
@@ -233,7 +234,7 @@ const ProcessSection = () => {
       </div>
 
       <div 
-        className={`process-card card-base rounded-[2.5rem] p-8 md:p-12 min-h-[450px] flex flex-col md:flex-row gap-12 items-center transition-all duration-500 hover:shadow-2xl hover:border-accent-highlight/50 ${animating ? 'opacity-50 scale-[0.98]' : 'opacity-100 scale-100'}`}
+        className={`process-card glass-morphism shadow-xl rounded-[2.5rem] p-8 md:p-12 min-h-[450px] flex flex-col md:flex-row gap-12 items-center transition-all duration-500 hover:shadow-2xl hover:border-accent-highlight/50 ${animating ? 'opacity-50 scale-[0.98]' : 'opacity-100 scale-100'}`}
       >
         <div className="md:w-1/2 space-y-8">
           <Badge className="border-accent-highlight/30 text-accent-highlight bg-accent-highlight/5">Process Phase 0{activeStep}</Badge>
@@ -319,7 +320,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
   const contentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="border-b border-border py-4">
+    <div className="border-b border-border/50 py-4 last:border-0">
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between py-4 text-left focus:outline-none group"
@@ -360,8 +361,10 @@ const FAQSection = () => {
       <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center text-text">
         Frequently Asked <span className="font-serif-display italic font-normal ml-2">Questions</span>
       </h2>
-      <div className="space-y-2">
-        {faqs.map((f, i) => <FAQItem key={i} question={f.q} answer={f.a} />)}
+      <div className="glass-morphism rounded-[2.5rem] p-8 md:p-12 shadow-xl">
+        <div className="space-y-2">
+          {faqs.map((f, i) => <FAQItem key={i} question={f.q} answer={f.a} />)}
+        </div>
       </div>
     </div>
   );
@@ -391,7 +394,7 @@ const FooterTitle = () => {
   );
 };
 
-// 5. Waitlist Page Component (New)
+// 5. Waitlist Page Component
 const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
   const [formData, setFormData] = useState({
     email: 'john@company.com',
@@ -413,7 +416,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-6 container mx-auto max-w-3xl animate-fade-in">
+    <div className="min-h-screen pt-28 pb-20 px-6 container mx-auto max-w-3xl animate-fade-in relative z-10">
        <button 
          onClick={onBack}
          className="mb-8 flex items-center gap-2 text-sm font-bold text-text-secondary hover:text-accent-highlight transition-colors"
@@ -421,7 +424,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
          ← Back to Home
        </button>
        
-       <div className="card-base p-8 md:p-12 rounded-[2rem] shadow-2xl bg-surface">
+       <div className="glass-morphism p-8 md:p-12 rounded-[2rem] shadow-2xl">
           <div className="mb-10">
              <h2 className="text-3xl font-bold text-text mb-2">Contact Information</h2>
              <p className="text-text-secondary">Please provide your contact details so we can reach you.</p>
@@ -439,7 +442,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/40"
+                  className="w-full bg-white/80 dark:bg-surface/50 border border-border/60 rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/60 backdrop-blur-md font-medium"
                   placeholder="john@company.com"
                 />
                 <p className="text-xs text-text-secondary">Please use your work email address.</p>
@@ -457,7 +460,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
                      value={formData.name}
                      onChange={handleChange}
                      required
-                     className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/40"
+                     className="w-full bg-white/80 dark:bg-surface/50 border border-border/60 rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/60 backdrop-blur-md font-medium"
                      placeholder="John Doe"
                    />
                 </div>
@@ -470,7 +473,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
                      name="phone"
                      value={formData.phone}
                      onChange={handleChange}
-                     className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/40"
+                     className="w-full bg-white/80 dark:bg-surface/50 border border-border/60 rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/60 backdrop-blur-md font-medium"
                      placeholder="(555) 123-4567"
                    />
                 </div>
@@ -486,7 +489,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
                   name="company"
                   value={formData.company}
                   onChange={handleChange}
-                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/40"
+                  className="w-full bg-white/80 dark:bg-surface/50 border border-border/60 rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/60 backdrop-blur-md font-medium"
                   placeholder="Acme Inc."
                 />
                 <p className="text-xs text-text-secondary">Optional: Tell us where you work.</p>
@@ -504,7 +507,7 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/40 resize-none"
+                  className="w-full bg-white/80 dark:bg-surface/50 border border-border/60 rounded-xl px-4 py-3 text-text focus:outline-none focus:ring-2 focus:ring-accent-highlight/20 transition-all placeholder:text-text-secondary/60 resize-none backdrop-blur-md font-medium"
                   placeholder="Tell us about your project or inquiry..."
                   maxLength={500}
                 ></textarea>
@@ -529,167 +532,194 @@ const WaitlistPage = ({ onBack }: { onBack: () => void }) => {
   );
 };
 
-// --- Updated Architecture Diagram with GSAP ScrollTrigger ---
-
-const ArchitectureDiagram = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const ctx = (window as any).gsap.context(() => {
-      // Connect all vertical lines
-      const tl = (window as any).gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-          end: "bottom 80%",
-          scrub: 1.5,
-          toggleActions: "play reverse play reverse"
-        }
-      });
-
-      // Enhancing animations to be "pulse-like" when active
-      
-      // Step 1: Line 1 grows
-      tl.to(".line-1", { height: "60px", duration: 1, ease: "none" })
-        
-        // Step 2: Decomposer activates (PULSE effect)
-        .to(".node-decomposer", { 
-          backgroundColor: "rgba(59, 130, 246, 0.15)", 
-          borderColor: "rgba(59, 130, 246, 0.6)", 
-          scale: 1.15, 
-          boxShadow: "0 0 20px rgba(59, 130, 246, 0.4)",
-          duration: 0.3,
-          ease: "back.out(1.7)" 
-        }, "<")
-        .to(".node-decomposer", { // Settle slightly
-          scale: 1.05,
-          boxShadow: "0 0 10px rgba(59, 130, 246, 0.2)",
-          duration: 0.5 
-        })
-
-        // Step 3: Line 2
-        .to(".line-2", { height: "60px", duration: 1, ease: "none" })
-        
-        // Step 4: Parallel Agents
-        .fromTo(".parallel-branch", { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.5 })
-        .to(".node-agent", { 
-          borderColor: "rgba(16, 185, 129, 0.5)", 
-          backgroundColor: "rgba(16, 185, 129, 0.1)", 
-          scale: 1.1,
-          boxShadow: "0 0 15px rgba(16, 185, 129, 0.3)",
-          stagger: 0.1, 
-          duration: 0.3,
-          ease: "back.out(1.7)" 
-        })
-        .to(".node-agent", {
-          scale: 1.0,
-          boxShadow: "0 0 5px rgba(16, 185, 129, 0.1)",
-          stagger: 0.1,
-          duration: 0.5
-        })
-        
-        // Step 5: Merge
-        .to(".line-3", { height: "40px", duration: 0.8, ease: "none" })
-        
-        // Step 6: Orchestrator (PULSE)
-        .to(".node-orchestrator", { 
-          backgroundColor: "rgba(139, 92, 246, 0.15)", 
-          borderColor: "rgba(139, 92, 246, 0.6)", 
-          scale: 1.15, 
-          boxShadow: "0 0 20px rgba(139, 92, 246, 0.4)",
-          duration: 0.3,
-          ease: "back.out(1.7)"
-        })
-        .to(".node-orchestrator", { 
-          scale: 1.05,
-          boxShadow: "0 0 10px rgba(139, 92, 246, 0.2)",
-          duration: 0.5
-        })
-
-        // Step 7: Final Output
-        .to(".line-4", { height: "60px", duration: 1, ease: "none" })
-        .to(".node-output", { 
-          backgroundColor: "rgba(255, 255, 255, 0.1)", 
-          borderColor: "#fff", 
-          scale: 1.15, 
-          boxShadow: "0 0 25px rgba(255, 255, 255, 0.3)",
-          duration: 0.3,
-          ease: "back.out(1.7)"
-        });
-
-    }, containerRef);
-
-    return () => ctx.revert();
+// --- WIP Page Component ---
+const WIPPage = ({ onBack }: { onBack: () => void }) => {
+  const [message, setMessage] = useState("");
+  
+  useEffect(() => {
+    const messages = [
+      "I will be right back",
+      "Refactoring the universe...",
+      "Teaching AI to love...",
+      "Compiling more pixels...",
+      "Just a moment, aligning the stars...",
+      "Fetching more coffee for the developer..."
+    ];
+    setMessage(messages[Math.floor(Math.random() * messages.length)]);
   }, []);
 
-  const Node = ({ label, className = "", type = "default" }: any) => {
-    let colors = "border-border bg-surface text-text";
-    if (type === "input") colors = "border-accent-highlight text-accent-highlight bg-accent-highlight/5 shadow-[0_0_15px_rgba(59,130,246,0.1)]";
-    if (type === "output") colors = "border-text text-text bg-text/5";
-    
-    return (
-      <div className={`relative z-10 px-8 py-3 rounded-xl border font-mono text-xs font-bold shadow-sm transition-all duration-300 ${colors} ${className}`}>
-        {label}
-      </div>
-    );
-  };
-
-  const VLine = ({ className = "" }: any) => (
-    <div className={`w-[2px] bg-accent-highlight/30 mx-auto h-0 transition-all ${className}`}></div>
-  );
-
   return (
-    <div ref={containerRef} className="flex flex-col items-center py-12 w-full max-w-3xl mx-auto relative min-h-[600px]">
-      
-      {/* 1. Input Node */}
-      <Node label="USER QUERY" type="input" className="z-20" />
-      
-      {/* Line 1 */}
-      <VLine className="line-1" />
-
-      {/* 2. Decomposer Node */}
-      <Node label="TASK DECOMPOSER" className="node-decomposer z-20" />
-
-      {/* Line 2 */}
-      <VLine className="line-2" />
-
-      {/* 3. Parallel Agents Section */}
-      <div className="relative w-full max-w-md flex justify-center py-2">
-         {/* Horizontal bar for branching */}
-         <div className="parallel-branch absolute top-0 left-10 right-10 h-[2px] bg-accent-highlight/30 origin-top"></div>
-         
-         <div className="flex justify-between w-full px-10 pt-4">
-             <div className="flex flex-col items-center">
-                <div className="parallel-branch w-[2px] h-4 bg-accent-highlight/30 absolute top-0 left-[23%]"></div>
-                <Node label="QUANT AGENT" className="node-agent" />
-                <div className="line-3 w-[2px] bg-accent-highlight/30 h-0 mt-2"></div>
-             </div>
-             <div className="flex flex-col items-center">
-                 <div className="parallel-branch w-[2px] h-4 bg-accent-highlight/30 absolute top-0 left-1/2"></div>
-                <Node label="SKEPTIC AGENT" className="node-agent" />
-                <div className="line-3 w-[2px] bg-accent-highlight/30 h-0 mt-2"></div>
-             </div>
-             <div className="flex flex-col items-center">
-                 <div className="parallel-branch w-[2px] h-4 bg-accent-highlight/30 absolute top-0 right-[23%]"></div>
-                <Node label="HISTORIAN" className="node-agent" />
-                <div className="line-3 w-[2px] bg-accent-highlight/30 h-0 mt-2"></div>
-             </div>
-         </div>
-      </div>
-
-      {/* 4. Orchestrator */}
-      <Node label="MAIN ORCHESTRATOR" className="node-orchestrator z-20 mt-2" />
-
-      {/* Line 4 */}
-      <VLine className="line-4" />
-
-      {/* 5. Output */}
-      <Node label="FINAL SYNTHESIS" type="output" className="node-output z-20" />
-
-      {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(59,130,246,0.1) 0%, transparent 70%)' }}></div>
+    <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 z-0">
+             <Metaballs 
+                speed={1} 
+                count={10} 
+                size={0.83} 
+                scale={1} 
+                colors={['#6E33CC', '#FF5500', '#FFC105', '#FFC800', '#F585FF']} 
+                colorBack="#00000000" 
+                className="w-full h-full bg-black" 
+            />
+        </div>
+        
+        <div className="relative z-10 text-center space-y-8 p-12 glass-morphism rounded-[3rem] max-w-2xl mx-6 shadow-2xl">
+            <h1 className="text-6xl md:text-8xl font-black text-white mix-blend-difference tracking-tighter">WIP</h1>
+            <p className="text-xl md:text-2xl font-serif-display italic text-white/90 font-medium">
+                "{message}"
+            </p>
+            <Button onClick={onBack} className="mx-auto !bg-white !text-black hover:scale-105">
+                Go Back Home
+            </Button>
+        </div>
     </div>
   );
+}
+
+
+// --- Updated Interactive Flowchart ---
+
+const InteractiveFlowchart = () => {
+    // Initial nodes configuration
+    const initialNodes = [
+        { id: 1, x: 50, y: 250, label: "QUERY INPUT", type: "input", info: "User natural language entry point." },
+        { id: 2, x: 250, y: 250, label: "DECOMPOSER", type: "default", info: "Breaks query into sub-tasks and semantic map." },
+        { id: 3, x: 500, y: 100, label: "QUANT AGENT", type: "agent", info: "Analyses numerical datasets and statistical trends." },
+        { id: 4, x: 500, y: 250, label: "SKEPTIC AGENT", type: "agent", info: "Challenges assumptions and checks for bias." },
+        { id: 5, x: 500, y: 400, label: "HISTORIAN", type: "agent", info: "Provides context, precedent, and evolution." },
+        { id: 6, x: 750, y: 250, label: "ORCHESTRATOR", type: "default", info: "Synthesizes parallel streams and resolves conflicts." },
+        { id: 7, x: 950, y: 250, label: "FINAL OUTPUT", type: "output", info: "Generates the final, grounded research report." }
+    ];
+
+    const [nodes, setNodes] = useState(initialNodes);
+    const [draggingId, setDraggingId] = useState<number | null>(null);
+    const [selectedNode, setSelectedNode] = useState<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const dragOffset = useRef({ x: 0, y: 0 });
+
+    const handleMouseDown = (e: React.MouseEvent, id: number) => {
+        const node = nodes.find(n => n.id === id);
+        if (!node || !containerRef.current) return;
+        
+        const rect = containerRef.current.getBoundingClientRect();
+        // Calculate offset from node top-left
+        dragOffset.current = {
+            x: e.clientX - rect.left - node.x,
+            y: e.clientY - rect.top - node.y
+        };
+        setDraggingId(id);
+        setSelectedNode(id);
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (draggingId === null || !containerRef.current) return;
+        
+        const rect = containerRef.current.getBoundingClientRect();
+        const newX = e.clientX - rect.left - dragOffset.current.x;
+        const newY = e.clientY - rect.top - dragOffset.current.y;
+        
+        // Constrain within container approximately
+        const clampedX = Math.max(0, Math.min(newX, rect.width - 150));
+        const clampedY = Math.max(0, Math.min(newY, rect.height - 60));
+
+        setNodes(nodes.map(n => n.id === draggingId ? { ...n, x: clampedX, y: clampedY } : n));
+    };
+
+    const handleMouseUp = () => {
+        setDraggingId(null);
+    };
+
+    // Define connections (source -> target)
+    const connections = [
+        [1, 2],
+        [2, 3], [2, 4], [2, 5],
+        [3, 6], [4, 6], [5, 6],
+        [6, 7]
+    ];
+
+    // Helper to get node center
+    const getCenter = (id: number) => {
+        const n = nodes.find(x => x.id === id);
+        return n ? { x: n.x + 75, y: n.y + 25 } : { x: 0, y: 0 }; // Approx half width/height
+    };
+
+    // Calculate lines
+    const lines = connections.map(([start, end], idx) => {
+        const s = getCenter(start);
+        const e = getCenter(end);
+        return (
+            <line 
+                key={idx} 
+                x1={s.x} y1={s.y} 
+                x2={e.x} y2={e.y} 
+                stroke="var(--accent-secondary)" 
+                strokeWidth="2" 
+                strokeOpacity="0.4"
+            />
+        );
+    });
+
+    return (
+        <div 
+            className="w-full overflow-hidden relative select-none"
+            style={{ height: '600px', cursor: draggingId ? 'grabbing' : 'default' }}
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+        >
+            <div className="absolute top-4 left-4 z-20 pointer-events-none">
+                 <Badge className="bg-accent-highlight/10 border-accent-highlight/30 text-accent-highlight">Interactive Logic Map</Badge>
+                 <p className="text-[10px] text-text-secondary mt-1 ml-1">Drag nodes to reorganize • Click for details</p>
+            </div>
+
+            {/* SVG Layer for Lines */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                {lines}
+            </svg>
+
+            {/* Nodes Layer */}
+            {nodes.map(node => (
+                <div
+                    key={node.id}
+                    onMouseDown={(e) => handleMouseDown(e, node.id)}
+                    className={`absolute w-[150px] h-[50px] flex items-center justify-center rounded-xl border text-[10px] font-bold font-mono tracking-wide shadow-lg cursor-grab active:cursor-grabbing transition-colors z-10 hover:z-20
+                        ${node.id === selectedNode ? 'ring-2 ring-accent-highlight ring-offset-2 ring-offset-surface scale-105' : ''}
+                        ${node.type === 'input' ? 'bg-accent-highlight/10 border-accent-highlight text-accent-highlight' : 
+                          node.type === 'output' ? 'bg-text/5 border-text text-text' : 
+                          node.type === 'agent' ? 'bg-surface border-green-500/50 text-green-600 dark:text-green-400' :
+                          'bg-surface border-border text-text'
+                        }
+                    `}
+                    style={{ left: node.x, top: node.y }}
+                >
+                    {node.label}
+                    {/* Pulsing indicator if active/selected */}
+                    {node.id === selectedNode && (
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-highlight opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-highlight"></span>
+                        </span>
+                    )}
+                </div>
+            ))}
+
+            {/* Info Panel Overlay */}
+            {selectedNode && (
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 glass-morphism p-4 rounded-2xl border border-accent-highlight/20 shadow-xl max-w-sm w-full animate-fade-in z-30">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-bold text-accent-highlight uppercase tracking-widest">
+                            {nodes.find(n => n.id === selectedNode)?.label}
+                        </span>
+                        <button onClick={() => setSelectedNode(null)} className="text-text-secondary hover:text-text">×</button>
+                    </div>
+                    <p className="text-sm text-text-secondary">
+                        {nodes.find(n => n.id === selectedNode)?.info}
+                    </p>
+                </div>
+            )}
+        </div>
+    );
 };
 
 // --- Metrics Dashboard (Unchanged) ---
@@ -840,7 +870,7 @@ const MetricsDashboard = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
       {['Reliability', 'Compute', 'Reasoning Space'].map((title, idx) => (
-        <div key={idx} className="metric-card card-base p-6 rounded-2xl">
+        <div key={idx} className="metric-card glass-morphism shadow-xl p-6 rounded-2xl">
           <div className="flex items-center justify-between mb-8">
              <h4 className="font-mono text-[11px] text-text-secondary uppercase tracking-widest font-bold">{title}</h4>
              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
@@ -863,7 +893,7 @@ export default function App() {
     const saved = localStorage.getItem('axiom-theme');
     return saved ? saved === 'dark' : true;
   });
-  const [view, setView] = useState<'home' | 'waitlist'>('home');
+  const [view, setView] = useState<'home' | 'waitlist' | 'wip'>('home');
   const [waitlistHover, setWaitlistHover] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -895,7 +925,6 @@ export default function App() {
       });
 
       // Feature Cards Animation on Scroll
-      // Fix: Use autoAlpha to handle opacity+visibility automatically to prevent "invisible" issue if logic fails
       gsap.from(".capability-card", {
         scrollTrigger: {
           trigger: "#features",
@@ -926,19 +955,78 @@ export default function App() {
     return () => ctx.revert();
   }, [view]);
 
+  if (view === 'wip') {
+    return <WIPPage onBack={() => setView('home')} />;
+  }
+
   if (view === 'waitlist') {
     return (
       <div className="min-h-screen relative">
          {/* Background Grid - Persistence */}
-         <div className="absolute inset-0 z-[-1] pointer-events-none grid-bg opacity-50"></div>
+         <div className="fixed inset-0 z-0 pointer-events-none">
+            <DotGrid 
+                size={2} 
+                gapY={32} 
+                gapX={32} 
+                strokeWidth={0} 
+                sizeRange={0} 
+                opacityRange={0} 
+                shape="circle" 
+                colorFill={isDarkMode ? "#FFFFFF" : "#111827"} 
+                colorStroke="#FFAA00" 
+                colorBack={isDarkMode ? "#0A0A0A" : "#F4F6F8"} 
+                className="w-full h-full" 
+            />
+         </div>
          <WaitlistPage onBack={() => setView('home')} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Header - Capsule Style Glassmorphism */}
+    <div className="min-h-screen relative overflow-x-hidden selection:bg-accent-highlight/30">
+      {/* 1. Global Background (DotGrid) - Fixed, Lowest Layer */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+          <DotGrid 
+              size={2} 
+              gapY={32} 
+              gapX={32} 
+              strokeWidth={0} 
+              sizeRange={0} 
+              opacityRange={0} 
+              shape="circle" 
+              colorFill={isDarkMode ? "#FFFFFF" : "#111827"} 
+              colorStroke="#FFAA00" 
+              colorBack={isDarkMode ? "#0A0A0A" : "#F4F6F8"} 
+              className="w-full h-full" 
+          />
+      </div>
+
+      {/* 2. Hero Gradient - Absolute (Scrolls), Middle Layer */}
+      <div className="absolute top-0 left-0 w-full h-[120vh] z-1 pointer-events-none">
+         <div 
+            className="w-full h-full" 
+            style={{ 
+              maskImage: 'linear-gradient(to bottom, black 20%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 100%)' 
+            }}
+         >
+            <GrainGradient 
+                speed={1} 
+                scale={1} 
+                rotation={0} 
+                softness={0.5} 
+                intensity={0.5} 
+                noise={0.25} 
+                shape="corners" 
+                colors={['#7300FF', '#EBA8FF', '#00BFFF', '#2A00FF']} 
+                colorBack={isDarkMode ? "#0A0A0A" : "#F4F6F8"} 
+                className="w-full h-full" 
+            />
+         </div>
+      </div>
+
+      {/* Header - Z-50 */}
       <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-5xl">
         <div className="glass-morphism nav-capsule px-2 py-2 flex items-center justify-between shadow-2xl transition-all duration-300">
           <div className="flex items-center gap-4 px-4">
@@ -949,9 +1037,9 @@ export default function App() {
           
           <div className="flex items-center gap-2">
             <nav className="hidden md:flex items-center gap-8 px-6 border-r border-border/50 mr-2">
-              <a href="#features" className="text-xs font-semibold text-text-secondary hover:text-text transition-colors">Stack</a>
-              <a href="#process" className="text-xs font-semibold text-text-secondary hover:text-text transition-colors">Process</a>
-              <a href="#metrics" className="text-xs font-semibold text-text-secondary hover:text-text transition-colors">Data</a>
+              <button onClick={() => setView('wip')} className="text-xs font-semibold text-text-secondary hover:text-text transition-colors">Stack</button>
+              <button onClick={() => setView('wip')} className="text-xs font-semibold text-text-secondary hover:text-text transition-colors">Process</button>
+              <button onClick={() => setView('wip')} className="text-xs font-semibold text-text-secondary hover:text-text transition-colors">Data</button>
             </nav>
             
             <button 
@@ -977,15 +1065,15 @@ export default function App() {
         </div>
       </header>
 
-      <main ref={heroRef} className="container mx-auto px-6 pt-48 pb-32">
-        {/* Hero */}
-        <section className="text-center max-w-4xl mx-auto mb-40">
-          <div className="hero-elm inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full border border-border bg-surface text-accent-highlight text-[11px] font-mono tracking-widest uppercase font-bold shadow-sm">
+      <main ref={heroRef} className="container mx-auto px-6 pt-48 pb-32 relative z-10">
+        {/* Hero Content Only */}
+        <section className="text-center max-w-4xl mx-auto mb-40 relative">
+          <div className="hero-elm inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full border border-border bg-surface/50 backdrop-blur text-accent-highlight text-[11px] font-mono tracking-widest uppercase font-bold shadow-sm">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
             System Online: Epistemic Check Enabled
           </div>
           <h1 className="hero-elm text-5xl md:text-8xl font-bold mb-8 gradient-text tracking-tighter leading-[1.1] pb-2">
-            High-Fidelity <br/> Reasoning Engine.
+            High-Fidelity <br/> <span className="font-serif-display italic font-normal">Reasoning Engine.</span>
           </h1>
           <p className="hero-elm text-text-secondary text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
             Break complex research queries into atomic tasks. Execute with parallel validation sub-agents. Auditable, rigorous, and grounded.
@@ -994,7 +1082,7 @@ export default function App() {
             <Button onClick={() => setView('waitlist')} className="w-full sm:w-auto px-12 py-5 text-base shadow-xl hover:shadow-2xl">
               Get Alpha Access
             </Button>
-            <Button variant="secondary" className="w-full sm:w-auto px-12 py-5 text-base">
+            <Button variant="secondary" onClick={() => setView('wip')} className="w-full sm:w-auto px-12 py-5 text-base">
               Read Whitepaper
             </Button>
           </div>
@@ -1015,13 +1103,13 @@ export default function App() {
         </section>
 
         {/* Architecture */}
-        <section className="mb-48 relative overflow-hidden p-16 card-base rounded-[2.5rem]">
+        <section className="mb-48 relative overflow-hidden p-8 md:p-16 card-base rounded-[2.5rem]">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent-highlight/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-          <div className="text-center mb-16 relative z-10">
+          <div className="text-center mb-8 relative z-10">
             <h2 className="text-3xl font-bold mb-4 tracking-tight">Atomic Pipeline Flow</h2>
-            <p className="text-text-secondary text-xs font-mono uppercase tracking-widest font-bold">Logic Visualization</p>
+            <p className="text-text-secondary text-xs font-mono uppercase tracking-widest font-bold">Interactive Logic Visualization</p>
           </div>
-          <ArchitectureDiagram />
+          <InteractiveFlowchart />
         </section>
 
         {/* Metrics */}
@@ -1039,7 +1127,7 @@ export default function App() {
         </section>
 
         {/* Closing */}
-        <section className="text-center py-32 card-base rounded-[3rem] px-8 relative overflow-hidden">
+        <section className="text-center py-32 backdrop-blur-2xl bg-accent-highlight/10 border border-accent-highlight/20 shadow-2xl shadow-accent-highlight/10 rounded-[3rem] px-8 relative overflow-hidden">
            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-accent-highlight/5 pointer-events-none"></div>
           <h2 className="text-5xl md:text-6xl font-bold mb-8 tracking-tighter">Ready for Rigor?</h2>
           <p className="text-text-secondary mb-12 max-w-xl mx-auto text-lg">Join the research pool and start building with the industry's first dedicated reasoning execution engine.</p>
@@ -1048,7 +1136,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-20 bg-surface">
+      <footer className="border-t border-accent-highlight/20 py-20 backdrop-blur-2xl bg-accent-highlight/5 relative z-10">
         <div className="container mx-auto px-6">
            {/* Footer Hover Title */}
            <div className="mb-20">
@@ -1064,12 +1152,14 @@ export default function App() {
               <p className="text-xs text-text-secondary leading-loose max-w-xs font-medium">The first-ever research-grade execution engine for complex synthesis tasks. No chatbots, only rigor.</p>
             </div>
             <div className="flex justify-center gap-10">
-              <a href="#" className="text-xs font-bold text-text-secondary hover:text-accent-highlight transition-colors tracking-widest">GITHUB</a>
-              <a href="#" className="text-xs font-bold text-text-secondary hover:text-accent-highlight transition-colors tracking-widest">DOCS</a>
-              <a href="#" className="text-xs font-bold text-text-secondary hover:text-accent-highlight transition-colors tracking-widest">TWITTER</a>
+              <button onClick={() => setView('wip')} className="text-xs font-bold text-text-secondary hover:text-accent-highlight transition-colors tracking-widest">GITHUB</button>
+              <button onClick={() => setView('wip')} className="text-xs font-bold text-text-secondary hover:text-accent-highlight transition-colors tracking-widest">DOCS</button>
+              <button onClick={() => setView('wip')} className="text-xs font-bold text-text-secondary hover:text-accent-highlight transition-colors tracking-widest">TWITTER</button>
             </div>
             <div className="text-right">
-              <p className="text-xs text-text-secondary font-medium">© 2025 Axiom Labs Inc. <br/> Built with Gemini 3 Pro.</p>
+              <p className="text-xs text-text-secondary font-medium">
+                  Built by <span className="font-signature text-lg mx-1">roshan</span> with not love ❤️ but hard work 💪
+              </p>
             </div>
           </div>
         </div>
