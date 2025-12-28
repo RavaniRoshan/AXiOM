@@ -1,133 +1,212 @@
 # AXIOM-ONE
-
 ### A Research-Grade Reasoning System (Not a Chatbot)
 
-> **MVP Goal:** Build a thinking-first research agent that decomposes problems, runs multi-step reasoning loops, validates its own outputs, and exposes the entire thought pipeline to the user. This is about **epistemic rigor**, not vibes.
+![Axiom-One Hero](assets/axiom-one-hero.png)
+
+> **"Build a thinking-first research agent that decomposes problems, runs multi-step reasoning loops, validates its own outputs, and exposes the entire thought pipeline to the user."**
+
+This project is about **epistemic rigor**, not vibes.
 
 ---
 
-## 1. PRODUCT DEFINITION (CRISP)
+## 1. Product Definition
 
 ### What Axiom-One Does
 Axiom-One is a **research execution engine** that:
-- Accepts a complex question or goal
-- Breaks it into **atomic research tasks**
-- Executes them in parallel and sequentially
-- Cross-validates results
+- Accepts a complex question or goal.
+- Breaks it into **atomic research tasks**.
+- Executes them in parallel and sequentially.
+- Cross-validates results.
 - Produces:
-    - A final answer
-    - A transparent reasoning trace
-    - Structured artifacts (notes, citations, assumptions)
+    - A final answer.
+    - A transparent reasoning trace.
+    - Structured artifacts (notes, citations, assumptions).
 
 ### What It Is NOT
-- Not a chat UI with memory slapped on
-- Not a “personal assistant”
-- Not a prompt wrapper
-
-If it can’t explain *why* it believes something, it shuts up.
+- Not a chat UI with memory slapped on.
+- Not a “personal assistant”.
+- Not a prompt wrapper.
+*If it can’t explain why it believes something, it shuts up.*
 
 ---
 
-## 2. TECHNICAL ARCHITECTURE (AXIOM-ONE CORE)
+## 2. Technical Architecture
 
-### A. SYSTEM OVERVIEW
+### Blueprint (Subagent-Driven Research)
+The architecture follows a strict "Hub-and-Spoke" model where a central Orchestrator manages specialized modules. This ensures context cleanliness and prevents hallucination cascades.
 
-The system follows an agentic but disciplined architecture, orchestrating specialized modules to ensure correctness.
-
+#### High-Level Sequence
 ```mermaid
 sequenceDiagram
     participant U as User UI
     participant O as Orchestrator
     participant TD as Task Decomposer
-    participant SA as Subagents (Clean Context)
-    participant V as Reasoning Validator
-    participant S as Synthesizer
+    participant S as Subagents (Pool)
+    participant V as Validator
+    participant SE as Synthesis Engine
 
-    U->>O: Submit Query (e.g., "Evaluate Scalability")
-    O->>TD: Delegate Goal
-    TD-->>O: Return Task Graph (JSON)
+    U->>O: Submits Query
+    O->>TD: Decompose Goal
+    TD-->>O: Task Graph (JSON)
 
     loop Parallel Execution
-        O->>SA: Spawn Subagent (Task + Isolated Context)
-        Note over SA: Fetches sources, reasons, retries
-        SA-->>O: Return Result + Metadata (No Chat History)
+        O->>S: Spawn Subagent (Fresh Context)
+        S->>S: Execute Research
+        S-->>O: Return Result + Metadata
     end
 
-    O->>V: Send Merged Results
-    V-->>O: Flags, Contradictions, Confidence Scores
+    O->>V: Validate Outputs (Hostile Peer Review)
+    V-->>O: Flags, Revisions, Confidence Scores
 
-    O->>S: Request Final Output
-    S-->>O: Final Answer + Reasoning Trace
-    O-->>U: Display Results & Artifacts
+    O->>SE: Synthesize Final Answer
+    SE-->>U: Final Output + Reasoning Trace
 ```
 
-### B. CORE MODULES
+#### System Component Blueprint (The "FigJam" Model)
 
-#### 1️⃣ Task Decomposer (Brain Stem)
-*   **Input:** Complex user query.
-*   **Output:** Structured task graph (JSON).
-*   **Role:** Breaks down the problem into atomic units (e.g., Define terms, Survey techniques, Analyze tradeoffs).
+```mermaid
+graph TD
+    %% Styling
+    classDef gray fill:#f0f0f0,stroke:#333,stroke-width:2px,color:#000;
+    classDef blue fill:#e6f3ff,stroke:#0066cc,stroke-width:2px,color:#000;
+    classDef green fill:#e6fffa,stroke:#00cc99,stroke-width:2px,color:#000;
+    classDef orange fill:#fff0e6,stroke:#ff6600,stroke-width:2px,color:#000;
+    classDef purple fill:#f3e6ff,stroke:#6600cc,stroke-width:2px,color:#000;
 
-#### 2️⃣ Research Executor Pool
-*   **Role:** Each task becomes an independent execution unit.
-*   **Architecture:** Stateless workers. Each worker receives a task + context slice, calls the LLM, and returns a result with a confidence score.
-*   **Key:** No long chats. No rambling.
+    %% Frame 1: User + Entry Point
+    subgraph Frame1 ["Frame 1: User & Input"]
+        direction LR
+        User[User / Researcher] --> Query[Research Query]
+    end
+    class Frame1 gray
 
-#### 3️⃣ Evidence Store (Truth Backbone)
-*   **Vector Store:** Task outputs, semantic chunks.
-*   **Metadata DB:** Task IDs, Assumptions, Confidence, Source types.
-*   **Purpose:** Prevents hallucinations from pretending to be facts.
+    %% Frame 2: Orchestrator Layer
+    subgraph Frame2 ["Frame 2: Main Orchestrator (The Brain)"]
+        Orchestrator[Axiom-One Orchestrator<br/>(Global Objective Only)]
+        Decomposer[Task Decomposer<br/>(Atomic JSON Graph)]
+        Manager[Subagent Manager<br/>(Spawns Isolated Agents)]
 
-#### 4️⃣ Reasoning Validator (The Adult in the Room)
-*   **Checks:** Contradictions, unsupported claims, circular reasoning.
-*   **Implementation:** Secondary pass prompted as a "hostile peer reviewer".
-*   **Output:** Flags, required revisions, confidence downgrades.
+        Orchestrator --> Decomposer
+        Decomposer --> Manager
+    end
+    class Frame2 blue
 
-#### 5️⃣ Synthesis Engine
-*   **Role:** Merges task outputs, resolves conflicts, and produces the final answer with an assumption list and confidence score.
+    %% Frame 3: Subagent Execution Layer
+    subgraph Frame3 ["Frame 3: Isolated Research Subagents"]
+        direction LR
+        subgraph S1 [Subagent A]
+            TaskA[Task: Survey Techniques]
+        end
+        subgraph S2 [Subagent B]
+            TaskB[Task: Validate Claims]
+        end
+        subgraph S3 [Subagent C]
+            TaskC[Task: Extract Tradeoffs]
+        end
+
+        %% Note: Context = Ephemeral
+    end
+    class Frame3 green
+
+    %% Frame 4: Validation + Synthesis
+    subgraph Frame4 ["Frame 4: Validation & Synthesis"]
+        Validator[Reasoning Validator<br/>(Hostile Peer Review)]
+        Synthesizer[Synthesis Engine<br/>(Merge & Conflict Resolution)]
+
+        Validator --> Synthesizer
+    end
+    class Frame4 orange
+
+    %% Frame 5: Outputs + Persistence
+    subgraph Frame5 ["Frame 5: Artifacts"]
+        FinalAnswer[Final Answer<br/>(With Uncertainty)]
+        Trace[Reasoning Trace<br/>(Tree + Validation)]
+        Evidence[Evidence Store<br/>(Vector + Metadata)]
+    end
+    class Frame5 purple
+
+    %% Connections between Frames
+    Query --> Orchestrator
+    Manager -- Spawns --> S1
+    Manager -- Spawns --> S2
+    Manager -- Spawns --> S3
+
+    S1 -- Clean Result --> Orchestrator
+    S2 -- Clean Result --> Orchestrator
+    S3 -- Clean Result --> Orchestrator
+
+    Orchestrator -- All Results --> Validator
+    Synthesizer --> FinalAnswer
+    Synthesizer --> Trace
+    Synthesizer --> Evidence
+
+    %% Notes
+    Note1[Note: Failures die in Frame 3.<br/>Noise never reaches Orchestrator.]
+    Note1 -.- Frame3
+```
 
 ---
 
-## 3. MVP SCOPE
+## 3. Core Modules (The Real Meat)
 
-### Features (Locked)
-*   **Input:** Single complex research question.
-*   **Output:** Final synthesized answer, Task breakdown, Reasoning trace (collapsed by default), Confidence score.
-*   **UI:** Simple web interface (Task tree on left, outputs on right).
-*   **Tech Stack:**
-    *   Frontend: React / Vite
-    *   LLM: Gemini 3 Pro (Thinking enabled)
+### 1️⃣ Task Decomposer (Brain Stem)
+*   **Input:** User query.
+*   **Output:** Structured task graph (JSON).
+*   **Implementation:** Gemini 3 Pro in *Thinking Mode* with deterministic temperature.
+
+### 2️⃣ Research Executor Pool
+*   **Concept:** Each task becomes an **independent execution unit**.
+*   **Architecture:** Stateless workers. Each worker receives a task + context slice, calls the LLM, and stores the result + confidence score.
+*   **Why:** No long chats. No rambling. Context is ephemeral.
+
+### 3️⃣ Evidence Store (Truth Backbone)
+*   **Vector Store:** Task outputs and semantic chunks.
+*   **Metadata DB:** Task ID, Assumptions, Confidence, Source type.
+*   *Prevents hallucinations from pretending to be facts.*
+
+### 4️⃣ Reasoning Validator (The Adult in the Room)
+*   **Checks:** Contradictions, unsupported claims, circular reasoning.
+*   **Implementation:** Secondary Gemini pass prompted as a "hostile peer reviewer".
+
+### 5️⃣ Synthesis Engine
+*   **Responsibilities:** Merge task outputs, resolve conflicts, and produce the final answer with a "What could be wrong" section.
+
+---
+
+## 4. MVP Scope & Tech Stack
+
+### Tech Stack
+*   **Current MVP (This Repo):** React + Vite (Frontend Focus)
+*   **Target Architecture:** Next.js + FastAPI + Python (Full Agentic System)
+*   **LLM:** Gemini 3 Pro (Thinking enabled)
+*   **Storage:** Vector DB (Pinecone/FAISS) + Postgres/SQLite
+
+### MVP Features (Locked)
+*   ✅ **Input:** Single complex research question.
+*   ✅ **Output:** Final synthesized answer, task breakdown, reasoning trace.
+*   ✅ **UI:** Simple web interface (Task Tree left, Outputs right).
 
 ### NOT in MVP
 *   Multi-user collaboration
-*   Long-term memory
-*   File uploads
+*   Long-term memory (beyond current session)
 *   Real-time streaming
 *   Agent self-improvement loops
 
 ---
 
-## 4. WHY AXIOM-ONE MATTERS
+## 5. Development Setup
 
-Most “AI agents” optimize for fluency, hide uncertainty, and collapse under scrutiny.
-
-**Axiom-One optimizes for correctness under pressure.** It makes uncertainty explicit and treats reasoning as a first-class artifact. This is designed for researchers, serious engineers, and those who need epistemic rigor.
-
----
-
-## 5. GETTING STARTED
-
-This repository contains the MVP implementation of the Axiom-One client.
+This repository contains the **Frontend** implementation using React and Vite.
 
 ### Prerequisites
 *   Node.js (v18+)
-*   A Google Gemini API Key
+*   Google Gemini API Key
 
 ### Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-org/axiom-one.git
+    git clone https://github.com/yourusername/axiom-one.git
     cd axiom-one
     ```
 
@@ -137,15 +216,19 @@ This repository contains the MVP implementation of the Axiom-One client.
     ```
 
 3.  **Configure Environment:**
-    Create a `.env` file in the root directory (or `.env.local`) and add your API key:
+    Create a `.env` file in the root directory and add your API Key:
     ```env
-    VITE_GEMINI_API_KEY=your_api_key_here
+    GEMINI_API_KEY=your_gemini_api_key_here
     ```
 
-4.  **Run the application:**
+4.  **Run the Development Server:**
     ```bash
     npm run dev
     ```
 
-5.  **Open in Browser:**
-    Navigate to `http://localhost:5173` to access the Axiom-One interface.
+---
+
+## 6. Why Axiom-One Matters
+
+Most “AI agents” optimize for fluency, hide uncertainty, and collapse under scrutiny.
+**Axiom-One optimizes for correctness under pressure**, makes uncertainty explicit, and treats reasoning as a first-class artifact.
