@@ -82,9 +82,9 @@ graph TD
 
     %% Frame 2: Orchestrator Layer
     subgraph Frame2 ["Frame 2: Main Orchestrator (The Brain)"]
-        Orchestrator[Axiom-One Orchestrator<br/>(Global Objective Only)]
-        Decomposer[Task Decomposer<br/>(Atomic JSON Graph)]
-        Manager[Subagent Manager<br/>(Spawns Isolated Agents)]
+        Orchestrator["Axiom-One Orchestrator<br/>(Global Objective Only)"]
+        Decomposer["Task Decomposer<br/>(Atomic JSON Graph)"]
+        Manager["Subagent Manager<br/>(Spawns Isolated Agents)"]
 
         Orchestrator --> Decomposer
         Decomposer --> Manager
@@ -95,13 +95,13 @@ graph TD
     subgraph Frame3 ["Frame 3: Isolated Research Subagents"]
         direction LR
         subgraph S1 [Subagent A]
-            TaskA[Task: Survey Techniques]
+            TaskA["Task: Survey Techniques"]
         end
         subgraph S2 [Subagent B]
-            TaskB[Task: Validate Claims]
+            TaskB["Task: Validate Claims"]
         end
         subgraph S3 [Subagent C]
-            TaskC[Task: Extract Tradeoffs]
+            TaskC["Task: Extract Tradeoffs"]
         end
 
         %% Note: Context = Ephemeral
@@ -110,8 +110,8 @@ graph TD
 
     %% Frame 4: Validation + Synthesis
     subgraph Frame4 ["Frame 4: Validation & Synthesis"]
-        Validator[Reasoning Validator<br/>(Hostile Peer Review)]
-        Synthesizer[Synthesis Engine<br/>(Merge & Conflict Resolution)]
+        Validator["Reasoning Validator<br/>(Hostile Peer Review)"]
+        Synthesizer["Synthesis Engine<br/>(Merge & Conflict Resolution)"]
 
         Validator --> Synthesizer
     end
@@ -119,9 +119,9 @@ graph TD
 
     %% Frame 5: Outputs + Persistence
     subgraph Frame5 ["Frame 5: Artifacts"]
-        FinalAnswer[Final Answer<br/>(With Uncertainty)]
-        Trace[Reasoning Trace<br/>(Tree + Validation)]
-        Evidence[Evidence Store<br/>(Vector + Metadata)]
+        FinalAnswer["Final Answer<br/>(With Uncertainty)"]
+        Trace["Reasoning Trace<br/>(Tree + Validation)"]
+        Evidence["Evidence Store<br/>(Vector + Metadata)"]
     end
     class Frame5 purple
 
@@ -141,7 +141,7 @@ graph TD
     Synthesizer --> Evidence
 
     %% Notes
-    Note1[Note: Failures die in Frame 3.<br/>Noise never reaches Orchestrator.]
+    Note1["Note: Failures die in Frame 3.<br/>Noise never reaches Orchestrator."]
     Note1 -.- Frame3
 ```
 
