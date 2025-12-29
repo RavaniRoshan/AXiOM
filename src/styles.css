@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scroll snap utilities */
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+}
+
+.scroll-snap-align-start {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Project-specific utility placeholders can go here if needed. */

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { GrainGradient, DotGrid, Metaballs } from '@paper-design/shaders-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 // --- Utility Components ---
 
@@ -82,236 +83,79 @@ const CapabilityCard = ({
 }
 
 const CapabilitiesGrid = () => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-fr">
-      {/* Card 1: Data Analysis */}
-      <CapabilityCard
-        title="Analyze Research Datasets"
-        description="Upload CSVs or JSON datasets. AXIOM automatically identifies trends, anomalies, and statistical correlations."
-        visual={
-          <div className="w-full h-full flex items-center justify-center p-8 bg-zinc-50 dark:bg-zinc-900">
-             <div className="w-full h-full bg-surface border border-border rounded-lg shadow-sm overflow-hidden flex flex-col">
-                <div className="flex items-center px-4 py-2 border-b border-border gap-2">
-                   <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                   <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-                   <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                   <span className="text-[10px] text-text-secondary ml-2 font-mono">analysis_result.csv</span>
-                </div>
-                <div className="p-4 grid grid-cols-4 gap-2 text-[10px] font-mono text-text-secondary">
-                   <div className="font-bold text-text">ID</div><div className="font-bold text-text">Metric</div><div className="font-bold text-text">Value</div><div className="font-bold text-text">Trend</div>
-                   <div>001</div><div>Alpha</div><div>0.94</div><div className="text-green-500">↑ 12%</div>
-                   <div>002</div><div>Beta</div><div>0.82</div><div className="text-red-500">↓ 4%</div>
-                   <div>003</div><div>Gamma</div><div>1.02</div><div className="text-green-500">↑ 8%</div>
-                   <div>004</div><div>Delta</div><div>0.45</div><div className="text-text-secondary">-</div>
-                </div>
-                <div className="mt-auto p-2 border-t border-border bg-primary/20">
-                    <div className="h-1.5 w-2/3 bg-accent-highlight rounded-full"></div>
-                </div>
-             </div>
-          </div>
-        }
-      />
-
-      {/* Card 2: Knowledge Graph */}
-      <CapabilityCard
-        title="Generate Knowledge Graphs"
-        description="Visualize complex relationships between entities. Transform unstructured text into structured node-link diagrams."
-        visual={
-          <div className="w-full h-full relative overflow-hidden bg-black">
-             {/* Animated Background */}
-             <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'radial-gradient(#3291FF 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-             <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative w-32 h-32">
-                   <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-accent-highlight rounded-full -translate-x-1/2 -translate-y-1/2 shadow-[0_0_20px_#3291FF] z-10"></div>
-                   <div className="absolute top-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 animate-bounce"></div>
-                   <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                   <div className="absolute top-1/3 right-0 w-2 h-2 bg-white rounded-full animate-pulse delay-100"></div>
-                   <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                      <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-                      <line x1="50" y1="50" x2="25" y2="90" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-                      <line x1="50" y1="50" x2="90" y2="30" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
-                   </svg>
-                </div>
-             </div>
-          </div>
-        }
-      />
-
-      {/* Card 3: Ingest Documents */}
-      <CapabilityCard
-        title="Ingest Technical Papers"
-        description="Upload PDFs or provide ArXiv links. AXIOM parses tables, formulas, and citations with pixel-perfect accuracy."
-        visual={
-           <div className="w-full h-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
-              <div className="relative w-40 h-52 bg-white dark:bg-zinc-950 shadow-xl rounded border border-border transition-transform group-hover:-rotate-6 duration-500">
-                 <div className="p-4 space-y-2">
-                    <div className="h-2 w-3/4 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
-                    <div className="h-2 w-1/2 bg-zinc-200 dark:bg-zinc-800 rounded mb-4"></div>
-                    <div className="space-y-1">
-                       {[1,2,3,4,5,6].map(i => <div key={i} className="h-1 w-full bg-zinc-100 dark:bg-zinc-800/50 rounded"></div>)}
-                    </div>
-                    <div className="mt-4 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-100 dark:border-blue-900/30">
-                       <div className="h-1.5 w-full bg-blue-200 dark:bg-blue-800 rounded"></div>
-                    </div>
-                 </div>
-                 {/* Scan Line */}
-                 <div className="absolute top-0 left-0 w-full h-1 bg-accent-highlight shadow-[0_0_10px_#3291FF] animate-[scan_3s_linear_infinite] opacity-50"></div>
+  const capabilities = [
+    {
+      title: 'Analyze Research Datasets',
+      description: 'Upload CSVs or JSON datasets. AXIOM automatically identifies trends, anomalies, and statistical correlations.',
+      visual: (
+        <div className="w-full h-full flex items-center justify-center p-8 bg-zinc-50 dark:bg-zinc-900">
+           <div className="w-full h-full bg-surface border border-border rounded-lg shadow-sm overflow-hidden flex flex-col">
+              <div className="flex items-center px-4 py-2 border-b border-border gap-2">
+                 <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                 <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                 <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                 <span className="text-[10px] text-text-secondary ml-2 font-mono">analysis_result.csv</span>
+              </div>
+              <div className="p-4 grid grid-cols-4 gap-2 text-[10px] font-mono text-text-secondary">
+                 <div className="font-bold text-text">ID</div><div className="font-bold text-text">Metric</div><div className="font-bold text-text">Value</div><div className="font-bold text-text">Trend</div>
+                 <div>001</div><div>Alpha</div><div>0.94</div><div className="text-green-500">↑ 12%</div>
+                 <div>002</div><div>Beta</div><div>0.82</div><div className="text-red-500">↓ 4%</div>
+                 <div>003</div><div>Gamma</div><div>1.02</div><div className="text-green-500">↑ 8%</div>
+                 <div>004</div><div>Delta</div><div>0.45</div><div className="text-text-secondary">-</div>
+              </div>
+              <div className="mt-auto p-2 border-t border-border bg-primary/20">
+                  <div className="h-1.5 w-2/3 bg-accent-highlight rounded-full"></div>
               </div>
            </div>
-        }
-      />
-
-      {/* Card 4: Agent Reasoning */}
-      <CapabilityCard
-        title="Multi-hop Reasoning"
-        description="Ask complex questions that require chaining logic across multiple domains. Watch the agent think step-by-step."
-        visual={
-          <div className="w-full h-full bg-gradient-to-br from-indigo-500/10 to-purple-500/10 flex items-center justify-center">
-             <div className="w-[80%] bg-surface rounded-xl shadow-lg border border-border p-4 space-y-3">
-                <div className="flex gap-3">
-                   <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold">A</div>
-                   <div className="flex-1 space-y-1">
-                      <div className="h-2 bg-indigo-500/20 rounded w-1/2 animate-pulse"></div>
-                      <div className="h-2 bg-indigo-500/10 rounded w-3/4"></div>
-                   </div>
-                </div>
-                <div className="pl-9 space-y-2">
-                   <div className="flex items-center gap-2 text-[10px] text-text-secondary">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      <span>Searching database...</span>
-                   </div>
-                   <div className="flex items-center gap-2 text-[10px] text-text-secondary">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      <span>Verifying facts...</span>
-                   </div>
-                </div>
-             </div>
-          </div>
-        }
-      />
-    </div>
-  );
-};
-
-// 2. Process Section Component
-const ProcessSection = () => {
-  const [activeStep, setActiveStep] = useState(1);
-  const [animating, setAnimating] = useState(false);
-
-  const handleStepChange = (id: number) => {
-    if (activeStep === id) return;
-    setAnimating(true);
-    setTimeout(() => {
-        setActiveStep(id);
-        setAnimating(false);
-    }, 200);
-  };
-
-  const steps = [
-    { id: 1, title: "Decomposition", desc: "Query is broken into atomic logical units." },
-    { id: 2, title: "Execution", desc: "Parallel agents hunt for evidence." },
-    { id: 3, title: "Synthesis", desc: "Results are merged and verified." },
+        </div>
+      )
+    },
+    {
+      title: 'Generate Knowledge Graphs',
+      description: 'Visualize complex relationships between entities. Transform unstructured text into structured node-link diagrams.',
+      visual: (
+        <div className="w-full h-full relative overflow-hidden bg-black">
+           {/* Animated Background */}
+           <div className="absolute inset-0 opacity-40" style={{ backgroundImage: 'radial-gradient(#3291FF 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+           <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative w-32 h-32">
+                 <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-accent-highlight rounded-full -translate-x-1/2 -translate-y-1/2 shadow-[0_0_20px_#3291FF] z-10"></div>
+                 <div className="absolute top-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 animate-bounce"></div>
+                 <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                 <div className="absolute top-1/3 right-0 w-2 h-2 bg-white rounded-full animate-pulse delay-100"></div>
+                 <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                    <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+                    <line x1="50" y1="50" x2="25" y2="90" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+                    <line x1="50" y1="50" x2="90" y2="30" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+                 </svg>
+              </div>
+           </div>
+        </div>
+      )
+    }
   ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      <div className="flex justify-center mb-12">
-        <div className="inline-flex rounded-full bg-surface border border-border p-1.5 shadow-lg">
-          {steps.map((step) => (
-            <button
-              key={step.id}
-              onClick={() => handleStepChange(step.id)}
-              className={`px-8 py-3 rounded-full text-sm font-bold transition-all duration-300 ${
-                activeStep === step.id 
-                  ? 'bg-text text-surface shadow-md scale-105' 
-                  : 'text-text-secondary hover:text-text hover:bg-primary/50'
-              }`}
-            >
-              Step {step.id}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div 
-        className={`process-card glass-morphism shadow-xl rounded-[2.5rem] p-8 md:p-12 min-h-[450px] flex flex-col md:flex-row gap-12 items-center transition-all duration-500 hover:shadow-2xl hover:border-accent-highlight/50 ${animating ? 'opacity-50 scale-[0.98]' : 'opacity-100 scale-100'}`}
-      >
-        <div className="md:w-1/2 space-y-8">
-          <Badge className="border-accent-highlight/30 text-accent-highlight bg-accent-highlight/5">Process Phase 0{activeStep}</Badge>
-          
-          <div className="space-y-4">
-            <h3 className="text-4xl font-bold tracking-tight text-text">
-                {steps[activeStep-1].title}
-            </h3>
-            <p className="text-text-secondary text-lg leading-relaxed font-medium">
-                {activeStep === 1 && "The engine intercepts your raw natural language query. Instead of answering immediately, it maps the semantic space and identifies ambiguity. It constructs a dependency graph of what needs to be known before an answer can be synthesized."}
-                {activeStep === 2 && "AXIOM spins up ephemeral sub-agents. One might be parsing PDF tables, another scraping live data, and a third checking for logical fallacies in retrieved documents. This happens in parallel, reducing latency while maximizing rigor."}
-                {activeStep === 3 && "The Orchestrator collects all agent outputs. It looks for contradictions. If Agent A says 'True' and Agent B says 'False', a new 'Conflict Resolution' task is spawned. Only resolved, grounded facts make it to the final response."}
-            </p>
-          </div>
-
-          <div className="pt-2">
-             <button className="text-sm font-bold text-text border-b border-text/30 pb-1 hover:border-accent-highlight hover:text-accent-highlight transition-all">
-                View Architecture Spec &rarr;
-             </button>
-          </div>
-        </div>
-        
-        <div className="md:w-1/2 w-full">
-           <div className="rounded-2xl bg-[#0F1115] border border-border/20 p-6 shadow-2xl font-mono text-xs overflow-hidden relative h-[300px] text-gray-300">
-              <div className="flex gap-2 mb-6 opacity-50">
-                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              </div>
-              <div className="space-y-3 relative z-10">
-                 {activeStep === 1 && (
-                   <>
-                     <div className="text-green-400 font-bold">$ query.decompose("Market viability of fusion energy")</div>
-                     <div className="opacity-70">> Analyzing semantic structure...</div>
-                     <div className="opacity-70">> Found 3 distinct entities.</div>
-                     <div className="opacity-70">> Generating sub-queries:</div>
-                     <div className="pl-4 text-blue-400 bg-blue-500/10 py-1 rounded w-fit mb-1">[0] "Cost per kWh trends 2020-2025"</div>
-                     <div className="pl-4 text-blue-400 bg-blue-500/10 py-1 rounded w-fit">[1] "Regulatory hurdles EU vs US"</div>
-                   </>
-                 )}
-                 {activeStep === 2 && (
-                   <>
-                     <div className="text-blue-400 font-bold">$ agents.dispatch_parallel()</div>
-                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                        <span>> Agent_Quant:</span> 
-                        <span className="text-green-400 px-2 py-0.5 bg-green-900/30 rounded">Active (Processing CSV)</span>
-                     </div>
-                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                        <span>> Agent_Hist:</span> 
-                        <span className="text-green-400 px-2 py-0.5 bg-green-900/30 rounded">Active (Scanning Arxiv)</span>
-                     </div>
-                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                        <span>> Agent_Skept:</span> 
-                        <span className="text-yellow-400 px-2 py-0.5 bg-yellow-900/30 rounded">Reviewing (Bias Check)</span>
-                     </div>
-                   </>
-                 )}
-                 {activeStep === 3 && (
-                   <>
-                     <div className="text-purple-400 font-bold">$ synthesis.finalize()</div>
-                     <div className="opacity-70">> Resolving conflict in 'Cost Projections'...</div>
-                     <div className="opacity-70">> Weighting primary sources > news articles</div>
-                     <div className="bg-green-500/10 text-green-400 p-4 rounded-lg border border-green-500/20 mt-4 flex items-center gap-4">
-                       <div className="text-2xl">✓</div>
-                       <div>
-                           <div className="font-bold">Confidence Score: 94.2%</div>
-                           <div className="opacity-70">Citations: 12 Verified</div>
-                       </div>
-                     </div>
-                   </>
-                 )}
-              </div>
-           </div>
-        </div>
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-fr">
+      {capabilities.map((cap, idx) => (
+        <motion.div
+          key={cap.title}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: idx === 0 ? 0 : idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <CapabilityCard title={cap.title} description={cap.description} visual={cap.visual} />
+        </motion.div>
+      ))}
     </div>
   );
+}
+
+// 2. Process Section Component
+const ProcessSection = () => {
+  // This component has been replaced by FeatureShowcase
+  return null;
 };
 
 // 3. FAQ Section Component
@@ -386,11 +230,131 @@ const FooterTitle = () => {
         AXIOM
       </h1>
       <h1 
-        className={`absolute text-[6vw] font-bold tracking-widest text-accent-highlight transition-all duration-500 ease-in-out ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-[100%] opacity-0'}`}
+        className={`absolute text-[6vw] font-bold tracking-widest text-text transition-all duration-500 ease-in-out ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-[100%] opacity-0'}`}
       >
         COMING SOON
       </h1>
     </div>
+  );
+};
+
+// 4b. Feature Showcase Component with Scroll Animation
+const FeatureShowcase = () => {
+  const features = [
+    {
+      id: 1,
+      title: 'Research-Grade Decomposition',
+      description: 'Break down complex queries into atomic logical units. AXIOM maps the semantic space and identifies ambiguity before synthesis begins.',
+      icon: '01',
+      highlight: 'Semantic Analysis Engine'
+    },
+    {
+      id: 2,
+      title: 'Parallel Evidence Gathering',
+      description: 'Spin up ephemeral sub-agents simultaneously. One parses PDFs, another scrapes data, a third checks for logical fallacies—all at once.',
+      icon: '02',
+      highlight: 'Multi-Agent Orchestration'
+    },
+    {
+      id: 3,
+      title: 'Intelligent Conflict Resolution',
+      description: 'When agents disagree, a resolution task spawns automatically. Only grounded, verified facts reach the final output.',
+      icon: '03',
+      highlight: 'Verification Loop'
+    },
+    {
+      id: 4,
+      title: 'Auditable Reasoning Chain',
+      description: 'Every step is traced, logged, and explainable. Know exactly why AXIOM arrived at its conclusions.',
+      icon: '04',
+      highlight: 'Full Transparency'
+    }
+  ];
+
+  return (
+    <section className="relative py-32 px-6 md:px-12 bg-black text-surface dark:text-text overflow-hidden" style={{ scrollSnapType: 'y proximity' }}>
+      {/* Background gradient accent */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-highlight/5 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Section Header */}
+        <div className="mb-32 text-center">
+          <Badge className="mb-4 border-accent-highlight/30 text-accent-highlight bg-accent-highlight/5">CAPABILITIES</Badge>
+          <h2 className="text-5xl md:text-6xl font-black text-surface dark:text-text mb-6 tracking-tight">
+            How AXIOM Works
+          </h2>
+          <p className="text-surface/90 dark:text-text-secondary text-lg max-w-2xl mx-auto">
+            A research engine that thinks like a scientist, not a chatbot. Transparent. Auditable. Rigorous.
+          </p>
+        </div>
+
+        {/* Features Stack */}
+        <div className="space-y-24">
+          {features.map((feature, idx) => (
+            <FeatureCard key={feature.id} feature={feature} index={idx} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Feature Card with Scroll Animation
+const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start']
+  });
+
+  const yOffset = useTransform(
+    scrollYProgress,
+    [0, 1],
+    index % 2 === 0 ? [-100, 100] : [100, -100]
+  );
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0.5]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ y: yOffset, opacity }}
+      className={`grid grid-cols-1 md:grid-cols-2 gap-12 items-center scroll-snap-align-start`}
+    >
+      {/* Content */}
+      <div className={`space-y-8 ${index % 2 === 1 ? 'md:order-2' : ''}`}>
+        <div>
+          <span className="text-7xl font-black text-accent-highlight/20 block mb-2">
+            {feature.icon}
+          </span>
+          <h3 className="text-3xl md:text-4xl font-black text-surface dark:text-text mb-4 tracking-tight">
+            {feature.title}
+          </h3>
+          <p className="text-surface/90 dark:text-text-secondary text-lg leading-relaxed max-w-xl">
+            {feature.description}
+          </p>
+        </div>
+        
+        <div className="inline-flex items-center gap-3 px-4 py-3 rounded-full bg-accent-highlight/10 border border-accent-highlight/20 w-fit">
+          <div className="w-2 h-2 rounded-full bg-accent-highlight animate-pulse"></div>
+          <span className="text-sm font-mono text-accent-highlight">
+            {feature.highlight}
+          </span>
+        </div>
+      </div>
+
+      {/* Visual */}
+      <div className={`relative h-96 rounded-2xl overflow-hidden border border-border/30 bg-surface/5 flex items-center justify-center ${index % 2 === 1 ? 'md:order-1' : ''}`}>
+        <div className="absolute inset-0 bg-gradient-to-br from-accent-highlight/10 to-transparent opacity-50"></div>
+        <div className="relative z-10 text-center">
+          <div className="text-8xl font-black text-accent-highlight/20 mb-4">
+            {feature.icon}
+          </div>
+          <p className="text-surface/80 dark:text-text-secondary font-mono text-sm">
+            Feature Visualization
+          </p>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -727,6 +691,8 @@ const MetricsDashboard = () => {
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const donutChartRef = useRef<HTMLCanvasElement>(null);
   const plotlyRef = useRef<HTMLDivElement>(null);
+  const barChartInstance = useRef<any>(null);
+  const donutChartInstance = useRef<any>(null);
 
   useEffect(() => {
     // Ensure styles are computed
@@ -739,6 +705,10 @@ const MetricsDashboard = () => {
     const accentColor = isDark ? '#3291FF' : '#0070F3';
 
     if (barChartRef.current && (window as any).Chart) {
+      // Destroy existing chart to prevent reuse error
+      if (barChartInstance.current) {
+        barChartInstance.current.destroy();
+      }
       const ctx = barChartRef.current.getContext('2d');
       let gradient = null;
       if (ctx) {
@@ -747,7 +717,7 @@ const MetricsDashboard = () => {
         gradient.addColorStop(1, isDark ? 'rgba(50, 145, 255, 0.1)' : 'rgba(0, 112, 243, 0.1)');
       }
 
-      new (window as any).Chart(barChartRef.current, {
+      barChartInstance.current = new (window as any).Chart(barChartRef.current, {
         type: 'bar',
         data: {
           labels: ['Baseline LLM', 'AXIOM-ONE (v1)'],
@@ -785,7 +755,11 @@ const MetricsDashboard = () => {
     }
 
     if (donutChartRef.current && (window as any).Chart) {
-      new (window as any).Chart(donutChartRef.current, {
+      // Destroy existing chart to prevent reuse error
+      if (donutChartInstance.current) {
+        donutChartInstance.current.destroy();
+      }
+      donutChartInstance.current = new (window as any).Chart(donutChartRef.current, {
         type: 'doughnut',
         data: {
           labels: ['Decomposition', 'Execution', 'Validation', 'Synthesis'],
@@ -865,6 +839,14 @@ const MetricsDashboard = () => {
         }
       }, { displayModeBar: false, staticPlot: false });
     }
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (barChartInstance.current) barChartInstance.current.destroy();
+      if (donutChartInstance.current) donutChartInstance.current.destroy();
+    };
   }, []);
 
   return (
@@ -1093,14 +1075,8 @@ export default function App() {
           <CapabilitiesGrid />
         </section>
 
-        {/* New Process Section */}
-        <section id="process" className="mb-48">
-          <div className="mb-16 text-center">
-             <h2 className="text-3xl font-bold mb-4 tracking-tight">How It Works</h2>
-             <p className="text-text-secondary text-sm">Our proprietary smart process pipeline.</p>
-          </div>
-          <ProcessSection />
-        </section>
+        {/* New Feature Showcase Section */}
+        <FeatureShowcase />
 
         {/* Architecture */}
         <section className="mb-48 relative overflow-hidden p-8 md:p-16 card-base rounded-[2.5rem]">

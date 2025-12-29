@@ -9,15 +9,7 @@
     <!-- Favicon: Resolves 404 error -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23111827'/%3E%3Ctext x='50' y='55' fill='%23FFFFFF' font-family='monospace' font-size='60' text-anchor='middle' dominant-baseline='middle' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
 
-    <script>
-        // Optional: Suppress Tailwind CDN warning to keep console clean in this environment
-        const originalWarn = console.warn;
-        console.warn = (...args) => {
-            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
-            originalWarn(...args);
-        };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind will be built locally and imported from the app bundle -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -147,37 +139,9 @@
             backdrop-filter: blur(4px);
         }
 
-        tailwind.config = {
-          darkMode: 'class',
-          theme: {
-            extend: {
-              colors: {
-                primary: 'var(--bg-primary)',
-                surface: 'var(--bg-surface)',
-                border: 'var(--border-primary)',
-                text: 'var(--text-primary)',
-                'text-secondary': 'var(--text-secondary)',
-                'accent-main': 'var(--accent-primary)',
-                'accent-highlight': 'var(--accent-secondary)',
-              },
-              fontFamily: {
-                signature: ['Dancing Script', 'cursive'],
-              }
-            }
-          }
-        }
+                /* Tailwind config moved to tailwind.config.cjs for local build */
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "@paper-design/shaders-react": "https://esm.sh/@paper-design/shaders-react@0.0.68"
-  }
-}
-</script>
+<!-- Importmap removed so Vite will bundle local dependencies. -->
 </head>
 <body>
     <div id="root"></div>
@@ -187,5 +151,6 @@
         window.gsap.registerPlugin(window.ScrollTrigger);
       }
     </script>
+        <script type="module" src="/index.tsx"></script>
 </body>
 </html>
