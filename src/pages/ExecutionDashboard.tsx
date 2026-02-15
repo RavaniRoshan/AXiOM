@@ -1,14 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { Task, TaskGraph, SubagentResult, ReasoningTrace } from '../api/types';
-
-// Generate a short run ID
-function generateRunId(): string {
-  return "0x" + Math.random().toString(16).slice(2, 6).toUpperCase();
-}
-
-// Status type
-type ExecutionStatus = "idle" | "decomposing" | "executing" | "validating" | "synthesizing" | "complete" | "error";
+import type { Task, TaskGraph, SubagentResult, ReasoningTrace, ResearchReport } from '../api/types';
+import { runResearchExecution, type ExecutionUpdate, type ExecutionStatus } from '../api/orchestrator';
+import { formatManuscriptAsMarkdown } from '../api/synthesize';
 
 // Extended task with progress
 interface ExtendedTask extends Task {
@@ -33,11 +27,13 @@ function LogoIcon({ className }: { className?: string }) {
 interface ExecutionHeaderProps {
   runId: string;
   status: ExecutionStatus;
+  error?: string | null;
   onNewQuery: () => void;
   onExport: () => void;
+  onRetry?: () => void;
 }
 
-function ExecutionHeader({ runId, status, onNewQuery, onExport }: ExecutionHeaderProps) {
+function ExecutionHeader({ runId, status, error, onNewQuery, onExport, onRetry }: ExecutionHeaderProps) {
   const isRunning = status !== "complete" && status !== "error" && status !== "idle";
 
   return (
@@ -49,7 +45,7 @@ function ExecutionHeader({ runId, status, onNewQuery, onExport }: ExecutionHeade
         <div className="font-mono text-xs text-neutral-500 flex items-center gap-3">
           <span>RUN_ID: {runId}</span>
           <span className="text-neutral-200">|</span>
-          <span className="flex items-center gap-1.5" style={{ color: isRunning ? '#4F46E5' : '#0F766E' }}>
+          <span className="flex items-center gap-1.5" style={{ color: error ? '#B91C1C' : isRunning ? '#4F46E5' : '#0F766E' }}>
             {isRunning && (
               <>
                 <span className="relative flex h-2 w-2">
@@ -59,11 +55,19 @@ function ExecutionHeader({ runId, status, onNewQuery, onExport }: ExecutionHeade
                 <span>STATUS: {status.toUpperCase()}</span>
               </>
             )}
-            {!isRunning && <span>STATUS: {status.toUpperCase()}</span>}
+            {!isRunning && <span>STATUS: {error ? 'ERROR' : status.toUpperCase()}</span>}
           </span>
         </div>
       </div>
       <div className="flex gap-2">
+        {error && onRetry && (
+          <button
+            onClick={onRetry}
+            className="flex items-center justify-center h-8 px-4 bg-error-red text-white hover:bg-red-700 text-xs font-bold font-mono tracking-wide uppercase transition-colors"
+          >
+            Retry
+          </button>
+        )}
         <button
           onClick={onNewQuery}
           className="flex items-center justify-center h-8 px-4 bg-surface hover:bg-paper border border-neutral-200 text-ink text-xs font-bold font-mono tracking-wide uppercase transition-colors"
@@ -72,7 +76,8 @@ function ExecutionHeader({ runId, status, onNewQuery, onExport }: ExecutionHeade
         </button>
         <button
           onClick={onExport}
-          className="flex items-center justify-center h-8 px-4 bg-ink text-surface hover:bg-neutral-800 text-xs font-bold font-mono tracking-wide uppercase transition-colors shadow-hard"
+          disabled={status !== "complete"}
+          className="flex items-center justify-center h-8 px-4 bg-ink text-surface hover:bg-neutral-800 disabled:opacity-50 text-xs font-bold font-mono tracking-wide uppercase transition-colors shadow-hard"
         >
           Export Report
         </button>
@@ -170,9 +175,10 @@ interface ManuscriptPanelProps {
   assumptions: string[];
   onInspect: () => void;
   question: string;
+  isLoading: boolean;
 }
 
-function ManuscriptPanel({ manuscript, confidence, assumptions, onInspect, question }: ManuscriptPanelProps) {
+function ManuscriptPanel({ manuscript, confidence, assumptions, onInspect, question, isLoading }: ManuscriptPanelProps) {
   return (
     <article className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center justify-between px-4 md:px-8 py-4 md:py-6 border-b border-neutral-200 bg-surface shrink-0">
@@ -194,15 +200,19 @@ function ManuscriptPanel({ manuscript, confidence, assumptions, onInspect, quest
       </div>
       <div className="flex-1 overflow-y-auto p-4 md:p-8">
         <div className="max-w-none">
-          {manuscript ? (
+          {isLoading && !manuscript ? (
+            <div className="flex flex-col items-center justify-center h-full text-neutral-400">
+              <div className="w-16 h-16 border-2 border-neutral-200 border-t-ink rounded-full animate-spin mb-4"></div>
+              <p className="font-mono text-sm">SYNTHESIZING MANUSCRIPT...</p>
+            </div>
+          ) : manuscript ? (
             <div 
               className="font-serif leading-relaxed text-ink prose prose-sm"
               dangerouslySetInnerHTML={{ __html: manuscript }}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-neutral-400">
-              <div className="w-16 h-16 border-2 border-neutral-200 border-t-ink rounded-full animate-spin mb-4"></div>
-              <p className="font-mono text-sm">SYNTHESIZING MANUSCRIPT...</p>
+              <p className="font-mono text-sm">Waiting for execution to begin...</p>
             </div>
           )}
         </div>
@@ -318,110 +328,47 @@ function TraceModal({ taskId, taskTitle, trace, onClose, isOpen }: TraceModalPro
   );
 }
 
-// Mock task generation for demo
-function generateMockTasks(): ExtendedTask[] {
-  return [
-    {
-      id: "T1",
-      title: "Define Core Concepts",
-      description: "Identify and define key terminology and foundational concepts",
-      dependencies: [],
-      priority: "high",
-      estimatedTokens: 2000,
-      status: "COMPLETE",
-      progress: 1,
-      output: "Core concepts defined: Supply chain resilience, Critical materials, Geopolitical dependencies",
-      confidence: 0.94
-    },
-    {
-      id: "T2",
-      title: "Analyze Historical Data",
-      description: "Review past supply chain disruptions and their impacts",
-      dependencies: ["T1"],
-      priority: "high",
-      estimatedTokens: 3000,
-      status: "COMPLETE",
-      progress: 1,
-      output: "Historical analysis complete: 2011 tsunami, 2020 pandemic, 2022 chip shortage",
-      confidence: 0.91
-    },
-    {
-      id: "T3",
-      title: "Evaluate Current Constraints",
-      description: "Assess present-day supply chain vulnerabilities",
-      dependencies: ["T1", "T2"],
-      priority: "high",
-      estimatedTokens: 2500,
-      status: "EXECUTING",
-      progress: 0.65,
-    },
-    {
-      id: "T4",
-      title: "Project Future Scenarios",
-      description: "Model potential outcomes based on current trends",
-      dependencies: ["T3"],
-      priority: "medium",
-      estimatedTokens: 3500,
-      status: "PENDING",
-      progress: 0,
-    },
-    {
-      id: "T5",
-      title: "Synthesize Recommendations",
-      description: "Formulate actionable insights and strategic recommendations",
-      dependencies: ["T3", "T4"],
-      priority: "high",
-      estimatedTokens: 2000,
-      status: "PENDING",
-      progress: 0,
-    },
-  ];
+// Error Display Component
+interface ErrorDisplayProps {
+  error: string;
+  onRetry: () => void;
 }
 
-// Mock trace generation
-function generateMockTrace(taskId: string): ReasoningTrace[] {
-  return [
-    {
-      timestamp: new Date(Date.now() - 30000).toISOString(),
-      type: "THOUGHT",
-      content: `Beginning analysis for ${taskId}: Initializing context window with task parameters and dependency results.`
-    },
-    {
-      timestamp: new Date(Date.now() - 25000).toISOString(),
-      type: "ACTION",
-      content: "Searching knowledge base for relevant precedents and data sources..."
-    },
-    {
-      timestamp: new Date(Date.now() - 20000).toISOString(),
-      type: "THOUGHT",
-      content: "Identified 3 primary sources with high relevance. Proceeding to cross-reference findings."
-    },
-    {
-      timestamp: new Date(Date.now() - 15000).toISOString(),
-      type: "VALIDATE",
-      content: "Source credibility check: PASS. All sources peer-reviewed or from authoritative institutions."
-    },
-    {
-      timestamp: new Date(Date.now() - 10000).toISOString(),
-      type: "ACTION",
-      content: "Synthesizing findings into structured output format..."
-    },
-    {
-      timestamp: new Date(Date.now() - 5000).toISOString(),
-      type: "VALIDATE",
-      content: "Confidence assessment: p=0.94. Assumptions clearly documented."
-    }
-  ];
+function ErrorDisplay({ error, onRetry }: ErrorDisplayProps) {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center p-8">
+      <div className="max-w-md text-center">
+        <div className="w-16 h-16 bg-error-red/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        </div>
+        <h3 className="font-serif text-2xl text-ink mb-4">Execution Error</h3>
+        <p className="font-sans text-neutral-600 mb-6">{error}</p>
+        <button
+          onClick={onRetry}
+          className="px-6 py-3 bg-ink text-paper font-mono text-sm font-bold hover:bg-neutral-800 transition-colors shadow-hard"
+        >
+          Retry Execution
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // Main ExecutionDashboard Component
 export default function ExecutionDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
-  const question = (location.state as { question?: string } | null)?.question || "Untitled Research Query";
+  const { question, taskGraph } = location.state as { 
+    question: string; 
+    taskGraph: TaskGraph;
+  } || {};
 
   // State
-  const [runId] = useState(generateRunId());
+  const [runId, setRunId] = useState<string>(taskGraph?.runId || "0x0000");
   const [status, setStatus] = useState<ExecutionStatus>("idle");
   const [tasks, setTasks] = useState<ExtendedTask[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -431,79 +378,113 @@ export default function ExecutionDashboard() {
   const [traces, setTraces] = useState<Record<string, ReasoningTrace[]>>({});
   const [isTraceModalOpen, setIsTraceModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [executionReport, setExecutionReport] = useState<ResearchReport | null>(null);
+  
+  // Ref to track if component is mounted
+  const isMounted = useRef(true);
 
-  // Initialize with mock data for demo
+  // Redirect if no task graph
   useEffect(() => {
+    if (!taskGraph) {
+      navigate('/');
+      return;
+    }
+
+    // Initialize tasks from taskGraph
+    const initialTasks: ExtendedTask[] = taskGraph.tasks.map(t => ({
+      ...t,
+      status: "PENDING",
+      progress: 0,
+    }));
+    setTasks(initialTasks);
+    setRunId(taskGraph.runId);
+
+    // Start execution immediately
+    startExecution();
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, [taskGraph, navigate]);
+
+  // Start the research execution
+  const startExecution = async () => {
+    if (!question || !taskGraph) return;
+
+    setError(null);
     setStatus("decomposing");
-    
-    // Simulate decomposition
-    setTimeout(() => {
-      const mockTasks = generateMockTasks();
-      setTasks(mockTasks);
-      setStatus("executing");
-      
-      // Generate mock traces for completed tasks
-      const mockTraces: Record<string, ReasoningTrace[]> = {};
-      mockTasks.forEach(task => {
-        if (task.status === "COMPLETE") {
-          mockTraces[task.id] = generateMockTrace(task.id);
+
+    try {
+      await runResearchExecution({
+        question,
+        onProgress: (update: ExecutionUpdate) => {
+          if (!isMounted.current) return;
+
+          // Update status
+          setStatus(update.status);
+
+          // Update tasks based on progress
+          if (update.completedTasks) {
+            setTasks(prev => prev.map(task => {
+              if (update.currentTask === task.id) {
+                return { ...task, status: "EXECUTING", progress: 0.5 };
+              }
+              if (update.completedTasks?.includes(task.id)) {
+                return { ...task, status: "COMPLETE", progress: 1 };
+              }
+              return task;
+            }));
+          }
+
+          // Update manuscript when available
+          if (update.manuscript) {
+            setManuscript(update.manuscript);
+          }
+
+          // On completion, store report and navigate
+          if (update.status === "complete" && update.report) {
+            setExecutionReport(update.report);
+            setManuscript(update.report.manuscript);
+            setConfidence(update.report.confidenceScore);
+            setAssumptions(update.report.assumptions);
+            
+            // Store traces from all tasks
+            const allTraces: Record<string, ReasoningTrace[]> = {};
+            Object.values(update.report.tasks).forEach((result: SubagentResult) => {
+              allTraces[result.taskId] = result.trace;
+            });
+            setTraces(allTraces);
+
+            // Navigate to report after a short delay
+            setTimeout(() => {
+              if (isMounted.current) {
+                navigate('/report', { state: { report: update.report } });
+              }
+            }, 2000);
+          }
         }
       });
-      setTraces(mockTraces);
-
-      // Select first task by default
-      if (mockTasks.length > 0) {
-        setSelectedTaskId(mockTasks[0].id);
-      }
-
-      // Simulate progress
-      setTimeout(() => {
-        setStatus("validating");
-        setTimeout(() => {
-          setStatus("synthesizing");
-          setConfidence(0.923);
-          setAssumptions([
-            "Historical supply chain disruption patterns remain relevant for future predictions",
-            "Geopolitical tensions will continue to impact material sourcing",
-            "Technology adoption rates follow previously observed S-curves"
-          ]);
-          setManuscript(`
-            <h1>Supply Chain Analysis: Strategic Overview</h1>
-            <p>Based on comprehensive analysis of historical data and current market conditions, this report examines critical vulnerabilities in global supply chains with particular emphasis on technology sector dependencies.</p>
-            
-            <h2>Key Findings</h2>
-            <p>Our analysis reveals three primary vulnerability clusters: geographic concentration of manufacturing (p=0.94), single-source dependencies for critical components (p=0.91), and insufficient inventory buffers (p=0.87). These findings align with established risk management frameworks while highlighting emerging challenges unique to the current geopolitical landscape.</p>
-            
-            <h2>Historical Context</h2>
-            <p>The 2011 tsunami in Japan demonstrated how localized events cascade through global supply networks. Similarly, the 2020 pandemic exposed fragility in just-in-time manufacturing systems. Current data suggests these vulnerabilities persist despite industry acknowledgment.</p>
-            
-            <h2>Recommendations</h2>
-            <p>Diversification of supplier networks remains the most effective mitigation strategy, though implementation costs must be weighed against risk reduction benefits. Organizations should prioritize multi-sourcing for components with extended lead times and limited alternative suppliers.</p>
-          `);
-          setTimeout(() => {
-            setStatus("complete");
-          }, 1500);
-        }, 2000);
-      }, 3000);
-    }, 1500);
-  }, []);
+    } catch (err) {
+      if (!isMounted.current) return;
+      
+      console.error("Execution error:", err);
+      const errorMessage = err instanceof Error ? err.message : "Execution failed";
+      setError(errorMessage);
+      setStatus("error");
+    }
+  };
 
   const handleNewQuery = () => {
     navigate("/");
   };
 
   const handleExport = () => {
-    const reportData = {
-      runId,
-      question,
-      manuscript,
-      confidence,
-      assumptions,
-      tasks,
-      timestamp: new Date().toISOString()
-    };
-    navigator.clipboard.writeText(JSON.stringify(reportData, null, 2));
-    alert("Report copied to clipboard!");
+    if (!executionReport) return;
+    
+    const markdown = formatManuscriptAsMarkdown(executionReport);
+    navigator.clipboard.writeText(markdown);
+    alert("Report copied to clipboard as Markdown!");
   };
 
   const handleInspectLogic = () => {
@@ -514,11 +495,38 @@ export default function ExecutionDashboard() {
 
   const handleSelectTask = (taskId: string) => {
     setSelectedTaskId(taskId);
-    // Close sidebar on mobile after selection
     setIsSidebarOpen(false);
   };
 
+  const handleRetry = () => {
+    // Reset state and retry
+    setTasks(prev => prev.map(t => ({ ...t, status: "PENDING", progress: 0 })));
+    setManuscript("");
+    setConfidence(0);
+    setAssumptions([]);
+    setTraces({});
+    setError(null);
+    startExecution();
+  };
+
   const selectedTask = tasks.find(t => t.id === selectedTaskId);
+
+  // Show error display if there's an error
+  if (error) {
+    return (
+      <div className="h-screen bg-paper flex flex-col overflow-hidden">
+        <ExecutionHeader 
+          runId={runId} 
+          status={status}
+          error={error}
+          onNewQuery={handleNewQuery} 
+          onExport={handleExport}
+          onRetry={handleRetry}
+        />
+        <ErrorDisplay error={error} onRetry={handleRetry} />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-paper flex flex-col overflow-hidden">
@@ -526,7 +534,8 @@ export default function ExecutionDashboard() {
         runId={runId} 
         status={status} 
         onNewQuery={handleNewQuery} 
-        onExport={handleExport} 
+        onExport={handleExport}
+        onRetry={handleRetry}
       />
       
       <main className="flex-1 flex overflow-hidden">
@@ -554,7 +563,8 @@ export default function ExecutionDashboard() {
           confidence={confidence}
           assumptions={assumptions}
           onInspect={handleInspectLogic}
-          question={question}
+          question={question || "Untitled Research Query"}
+          isLoading={status === "synthesizing" || status === "executing"}
         />
       </main>
 

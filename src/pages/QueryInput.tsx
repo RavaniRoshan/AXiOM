@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { decompose } from '../api/decompose';
 
 function ArrowIcon({ className }: { className?: string }) {
   return (
@@ -23,7 +24,7 @@ export default function QueryInput() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
     if (trimmed.length < 20) {
@@ -32,10 +33,28 @@ export default function QueryInput() {
     }
     setError(null);
     setIsLoading(true);
-    setTimeout(() => {
-      navigate('/dashboard', { state: { question: trimmed } });
+    
+    try {
+      // Call the decomposition API
+      const taskGraph = await decompose({ question: trimmed });
+      
+      // Navigate to dashboard with question and task graph
+      navigate('/dashboard', { state: { question: trimmed, taskGraph } });
+    } catch (err) {
+      console.error('Decomposition error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to decompose question. Please try again.';
+      
+      // Check for specific error types
+      if (errorMessage.includes('API key')) {
+        setError('API key not configured. Please check your environment settings.');
+      } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError(errorMessage);
+      }
+    } finally {
       setIsLoading(false);
-    }, 600);
+    }
   };
 
   return (
