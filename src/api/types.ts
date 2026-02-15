@@ -31,6 +31,7 @@ export interface ReasoningTrace {
 // Subagent Execution Output
 export interface SubagentResult {
   taskId: string;
+  title?: string;
   output: string;
   assumptions: string[];
   confidenceScore: number;
