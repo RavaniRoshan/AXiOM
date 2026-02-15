@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AXIOM-ONE - The Living Document</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:opsz,wght@6..72,400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#111111", 
+              "paper": "#F9F8F4",
+              "surface": "#FFFFFF",
+              "ink": "#111111",
+              "ink-muted": "#656388",
+              "accent-error": "#B91C1C",
+              "accent-success": "#0F766E",
+              "accent-trace": "#4F46E5",
+              "border-std": "#E5E5E5",
+            },
+            fontFamily: {
+              "sans": ["Inter", "sans-serif"],
+              "serif": ["Newsreader", "serif"],
+              "mono": ["JetBrains Mono", "monospace"],
+            },
+            boxShadow: {
+              "hard": "4px 4px 0px rgba(0,0,0,0.05)",
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #e5e5e5;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #d4d4d4;
+        }
+
+        /* Typewriter cursor effect */
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: #111111;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* L-shape connector for tree view */
+        .tree-connector::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -12px;
+            width: 12px;
+            height: 24px;
+            border-left: 1px solid #E5E5E5;
+            border-bottom: 1px solid #E5E5E5;
+            border-bottom-left-radius: 0; 
+        }
+
+        .highlight-source {
+            background-color: rgba(185, 28, 28, 0.1);
+            border-bottom: 1px dashed #B91C1C;
+        }
+    </style>
+</head>
+<body class="bg-paper text-ink font-sans h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation / Status Bar -->
+<header class="h-14 border-b border-border-std bg-surface flex items-center justify-between px-6 shrink-0 z-20">
+<div class="flex items-center gap-4">
+<div class="size-5 text-ink">
+<svg class="w-full h-full" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h1 class="font-serif font-semibold text-lg tracking-tight">AXIOM-ONE</h1>
+<div class="h-4 w-px bg-border-std mx-2"></div>
+<div class="font-mono text-xs text-ink-muted flex items-center gap-3">
+<span>RUN_ID: 0x829</span>
+<span class="text-border-std">|</span>
+<span class="flex items-center gap-1.5 text-accent-trace">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-trace opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-accent-trace"></span>
+</span>
+                    STATUS: SYNTHESIZING
+                </span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center h-8 px-4 bg-surface hover:bg-paper border border-border-std text-ink text-xs font-bold font-mono tracking-wide uppercase transition-colors">
+                New Query
+            </button>
+<button class="flex items-center justify-center h-8 px-4 bg-ink text-surface hover:bg-gray-800 text-xs font-bold font-mono tracking-wide uppercase transition-colors shadow-hard">
+                Export Report
+            </button>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Left Panel: The Syllabus (Process View) -->
+<aside class="w-[320px] bg-surface border-r border-border-std flex flex-col shrink-0 z-10">
+<div class="p-6 border-b border-border-std bg-surface">
+<h2 class="font-serif font-semibold text-xl mb-1 text-ink">The Syllabus</h2>
+<p class="font-sans text-xs text-ink-muted">Hierarchical Task Decomposition</p>
+</div>
+<div class="flex-1 overflow-y-auto p-6 font-mono text-[13px] leading-relaxed">
+<ul class="flex flex-col gap-1 relative">
+<!-- Root Node -->
+<li class="flex items-start gap-2 text-ink-muted">
+<span class="material-symbols-outlined text-sm pt-0.5 text-accent-success">check_circle</span>
+<span class="opacity-50">00_init_context</span>
+</li>
+<!-- Branch 1 -->
+<li class="pl-5 relative tree-connector pt-2">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-sm pt-0.5 text-accent-success">check_circle</span>
+<span class="font-medium text-ink">01_fetch_market_data</span>
+</div>
+</li>
+<!-- Branch 2 (Active) -->
+<li class="pl-5 relative tree-connector pt-2">
+<div class="flex items-start gap-2 text-accent-trace">
+<span class="material-symbols-outlined text-sm pt-0.5 animate-spin">sync</span>
+<span class="font-bold">02_analyze_supply_chain</span>
+</div>
+<!-- Sub-branch -->
+<ul class="pl-1 pt-1 border-l border-border-std ml-[6px] flex flex-col gap-2 mt-2">
+<li class="pl-4 relative">
+<div class="absolute w-3 h-px bg-border-std top-2.5 left-0"></div>
+<div class="flex items-start gap-2 text-ink-muted">
+<span class="material-symbols-outlined text-sm pt-0.5 text-accent-success">check</span>
+<span>02a_source_validation</span>
+</div>
+</li>
+<li class="pl-4 relative">
+<div class="absolute w-3 h-px bg-border-std top-2.5 left-0"></div>
+<div class="flex items-start gap-2 text-ink">
+<span class="inline-block w-3 h-3 rounded-sm border border-accent-trace bg-accent-trace/10 flex items-center justify-center">
+<span class="w-1 h-1 bg-accent-trace rounded-full"></span>
+</span>
+<span class="font-medium">02b_graph_projection</span>
+</div>
+<div class="pl-6 pt-1 text-[11px] text-ink-muted opacity-80">
+                                    &gt; processing_node: eu_wafer_imports
+                                </div>
+</li>
+<li class="pl-4 relative opacity-40">
+<div class="absolute w-3 h-px bg-border-std top-2.5 left-0"></div>
+<div class="flex items-start gap-2">
+<span class="inline-block w-3 h-3 rounded-sm border border-border-std"></span>
+<span>02c_risk_assessment</span>
+</div>
+</li>
+</ul>
+</li>
+<!-- Branch 3 (Pending) -->
+<li class="pl-5 relative tree-connector pt-2 opacity-40">
+<div class="flex items-start gap-2">
+<span class="inline-block w-3.5 h-3.5 border border-border-std rounded-sm"></span>
+<span>03_synthesize_report</span>
+</div>
+</li>
+</ul>
+<div class="mt-8 pt-4 border-t border-dashed border-border-std">
+<p class="text-[11px] text-ink-muted mb-2 uppercase tracking-widest">System Events</p>
+<div class="space-y-2">
+<div class="flex gap-2 text-[11px]">
+<span class="text-ink-muted">14:02:21</span>
+<span class="text-accent-error">Refused context window overflow.</span>
+</div>
+<div class="flex gap-2 text-[11px]">
+<span class="text-ink-muted">14:02:05</span>
+<span class="text-ink">Retrying search_tool(q="Ga2O3 spot price")...</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Panel: The Manuscript (Content View) -->
+<main class="flex-1 overflow-y-auto relative flex justify-center bg-paper">
+<div class="w-full max-w-[1000px] flex pt-16 pb-32 pl-12 pr-6">
+<!-- Main Content Column -->
+<div class="w-full max-w-[680px] pr-8">
+<!-- Header -->
+<h1 class="font-serif text-[42px] leading-[1.1] font-semibold text-ink mb-12 tracking-tight">
+                        Analyze the impact of Gallium Oxide wafer supply chains on 2026 EV markets.
+                    </h1>
+<!-- Document Body -->
+<div class="prose prose-lg max-w-none text-ink font-sans text-[17px] leading-[1.6]">
+<p class="mb-6">
+                            Gallium Oxide (Ga<sub>2</sub>O<sub>3</sub>) represents a paradigm shift in power electronics, offering a bandgap of ~4.8 eV compared to 3.4 eV for Gallium Nitride (GaN) and 3.3 eV for Silicon Carbide (SiC). This ultra-wide bandgap theoretically allows for devices that can withstand significantly higher electric fields, potentially reducing power loss in EV inverters by an order of magnitude <sup class="text-accent-trace font-mono text-xs font-medium cursor-pointer">[1]</sup>.
+                        </p>
+<p class="mb-6">
+                            However, the supply chain for high-quality bulk substrates remains nascent. Unlike Silicon, which benefits from decades of Czochralski process optimization, Ga<sub>2</sub>O<sub>3</sub> relies largely on edge-defined film-fed growth (EFG), a technique primarily championed by Japanese conglomerate Novel Crystal Technology.
+                        </p>
+<p class="mb-6 highlight-source p-1 -m-1 rounded-sm transition-colors duration-300">
+                            Current projections suggest that yield rates for 100mm wafers will stabilize by Q4 2025, enabling a direct integration path for Tier-1 automotive suppliers by mid-2026. This assumption predicates on a 40% year-over-year reduction in defect density, matching the historical trajectory of SiC scaling in the early 2010s <sup class="text-accent-trace font-mono text-xs font-medium cursor-pointer">[2]</sup>.
+                        </p>
+<p class="mb-6 text-ink-muted">
+                            Furthermore, the geopolitical centralization of raw Gallium processing—currently 90% controlled by Chinese refineries—introduces a significant volatility vector. While raw Gallium is abundant, the refinement capacity for semiconductor-grade precursors is a distinct bottleneck that Western markets have yet to address effectively. <span class="cursor-blink"></span>
+</p>
+</div>
+</div>
+<!-- Margin Notes Column (Validation Gutter) -->
+<div class="w-[240px] shrink-0 flex flex-col gap-6 pt-[280px]">
+<!-- Validated Note -->
+<div class="group relative pl-3 border-l-2 border-border-std hover:border-accent-success transition-colors cursor-pointer">
+<div class="absolute -left-[5px] top-0 h-full w-[2px] bg-transparent group-hover:bg-accent-success transition-colors"></div>
+<h4 class="font-mono text-[11px] font-bold text-ink-muted uppercase mb-1 flex items-center gap-1 group-hover:text-accent-success">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                            Source Verified
+                         </h4>
+<p class="font-sans text-[12px] leading-tight text-ink-muted group-hover:text-ink">
+                            Technical specifications confirmed via IEEE Transactions on Power Electronics (2023).
+                         </p>
+</div>
+<!-- Warning Note -->
+<div class="group relative pl-3 border-l-2 border-accent-error bg-accent-error/5 py-2 pr-2 rounded-r-sm shadow-sm cursor-pointer hover:bg-accent-error/10 transition-colors">
+<h4 class="font-mono text-[11px] font-bold text-accent-error uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            Logic Flag
+                        </h4>
+<p class="font-sans text-[12px] leading-tight text-ink">
+<span class="font-semibold">Circular Dependency:</span> The projection relies on unverified Q3 reports from Supplier X, which cites this same projected timeline.
+                        </p>
+<div class="mt-2 flex gap-2">
+<button class="text-[10px] font-bold uppercase tracking-wide text-accent-trace hover:underline">Inspect Trace</button>
+</div>
+</div>
+<!-- Context Note -->
+<div class="group relative pl-3 border-l-2 border-border-std hover:border-ink transition-colors cursor-pointer opacity-60 hover:opacity-100">
+<h4 class="font-mono text-[11px] font-bold text-ink-muted uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">info</span>
+                            Context
+                         </h4>
+<p class="font-sans text-[12px] leading-tight text-ink-muted">
+                            Historical SiC data provided by Wolfspeed market analysis reports (2012-2015).
+                         </p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

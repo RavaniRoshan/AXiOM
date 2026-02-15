@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AXIOM-ONE - The Living Document</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:opsz,wght@6..72,400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --color-ink: #111111;
+            --color-paper: #F9F8F4;
+            --color-surface: #FFFFFF;
+            --color-error: #B91C1C;
+            --color-success: #0F766E;
+            --color-trace: #4F46E5;
+            --color-indigo: #6366F1;
+            --border-std: 1px solid #E5E5E5;
+        }
+        .grid-bg {
+            background-image: radial-gradient(var(--border-std) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: var(--color-ink);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .tree-connector::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -12px;
+            width: 12px;
+            height: 24px;
+            border-left: 1px solid #E5E5E5;
+            border-bottom: 1px solid #E5E5E5;
+        }
+        .highlight-source {
+            background-color: rgba(185, 28, 28, 0.1);
+            border-bottom: 1px dashed #B91C1C;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #e5e5e5;
+        }
+    </style>
+</head>
+<body class="bg-paper text-ink font-sans h-screen flex flex-col overflow-hidden">
+<header class="h-14 border-b border-border-std bg-surface flex items-center justify-between px-6 shrink-0 z-20">
+<div class="flex items-center gap-4">
+<div class="size-5 text-ink">
+<svg class="w-full h-full" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h1 class="font-serif font-semibold text-lg tracking-tight">AXIOM-ONE</h1>
+<div class="h-4 w-px bg-slate-200 mx-2"></div>
+<div class="font-mono text-xs text-slate-500 flex items-center gap-3">
+<span>RUN_ID: 0x829</span>
+<span class="text-slate-200">|</span>
+<span class="flex items-center gap-1.5 text-[var(--color-trace)]">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-trace)] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-trace)]"></span>
+</span>
+                    STATUS: SYNTHESIZING
+                </span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center h-8 px-4 bg-surface hover:bg-paper border border-slate-200 text-ink text-xs font-bold font-mono tracking-wide uppercase transition-colors">
+                New Query
+            </button>
+<button class="flex items-center justify-center h-8 px-4 bg-ink text-surface hover:bg-gray-800 text-xs font-bold font-mono tracking-wide uppercase transition-colors shadow-[4px_4px_0px_rgba(0,0,0,0.1)]">
+                Export Report
+            </button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-[320px] bg-surface border-r border-slate-200 flex flex-col shrink-0 z-10">
+<div class="p-6 border-b border-slate-200 bg-surface">
+<h2 class="font-serif font-semibold text-xl mb-1 text-ink">The Syllabus</h2>
+<p class="font-sans text-xs text-slate-500">Hierarchical Task Decomposition</p>
+</div>
+<div class="flex-1 overflow-y-auto p-6 font-mono text-[13px] leading-relaxed">
+<ul class="flex flex-col gap-1 relative">
+<li class="flex items-start gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm pt-0.5 text-[var(--color-success)]">check_circle</span>
+<span class="opacity-50">00_init_context</span>
+</li>
+<li class="pl-5 relative tree-connector pt-2">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-sm pt-0.5 text-[var(--color-success)]">check_circle</span>
+<span class="font-medium text-ink">01_fetch_market_data</span>
+</div>
+</li>
+<li class="pl-5 relative tree-connector pt-2">
+<div class="flex items-start gap-2 text-[var(--color-trace)]">
+<span class="material-symbols-outlined text-sm pt-0.5 animate-spin">sync</span>
+<span class="font-bold">02_analyze_supply_chain</span>
+</div>
+<ul class="pl-1 pt-1 border-l border-slate-200 ml-[6px] flex flex-col gap-2 mt-2">
+<li class="pl-4 relative">
+<div class="absolute w-3 h-px bg-slate-200 top-2.5 left-0"></div>
+<div class="flex items-start gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm pt-0.5 text-[var(--color-success)]">check</span>
+<span>02a_source_validation</span>
+</div>
+</li>
+<li class="pl-4 relative">
+<div class="absolute w-3 h-px bg-slate-200 top-2.5 left-0"></div>
+<div class="flex items-start gap-2 text-ink">
+<span class="inline-block w-3 h-3 border border-[var(--color-trace)] bg-[var(--color-trace)]/10 flex items-center justify-center">
+<span class="w-1 h-1 bg-[var(--color-trace)] rounded-full"></span>
+</span>
+<span class="font-medium">02b_graph_projection</span>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto relative bg-paper scroll-smooth">
+<div class="w-full max-w-[1000px] mx-auto flex pt-16 pb-24 px-12">
+<div class="w-full max-w-[680px] pr-8">
+<h1 class="font-serif text-[42px] leading-[1.1] font-semibold text-ink mb-12 tracking-tight">
+                        Analyze the impact of Gallium Oxide wafer supply chains on 2026 EV markets.
+                    </h1>
+<div class="prose prose-lg max-w-none text-ink font-sans text-[17px] leading-[1.6]">
+<p class="mb-6">
+                            Gallium Oxide (Ga<sub>2</sub>O<sub>3</sub>) represents a paradigm shift in power electronics, offering a bandgap of ~4.8 eV compared to 3.4 eV for Gallium Nitride (GaN) and 3.3 eV for Silicon Carbide (SiC).
+                        </p>
+<p class="mb-6 highlight-source p-1 -m-1 rounded-sm transition-colors duration-300">
+                            Current projections suggest that yield rates for 100mm wafers will stabilize by Q4 2025, enabling a direct integration path for Tier-1 automotive suppliers by mid-2026. <span class="cursor-blink"></span>
+</p>
+</div>
+</div>
+<div class="w-[240px] shrink-0 flex flex-col gap-6 pt-[160px]">
+<div class="group relative pl-3 border-l-2 border-accent-error bg-accent-error/5 py-3 pr-3 shadow-sm transition-colors">
+<h4 class="font-mono text-[11px] font-bold text-[var(--color-error)] uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            Logic Flag
+                        </h4>
+<p class="font-sans text-[12px] leading-tight text-ink">
+<span class="font-semibold">Circular Dependency:</span> The projection relies on unverified Q3 reports from Supplier X.
+                        </p>
+</div>
+</div>
+</div>
+<section class="w-full border-t border-slate-200 bg-white grid-bg py-24 px-12 relative">
+<div class="max-w-[1000px] mx-auto">
+<div class="mb-16">
+<h2 class="font-serif text-3xl font-semibold mb-2">How It Works</h2>
+<p class="font-sans text-slate-500 text-sm">The Axiomatic Reasoning Pipeline</p>
+</div>
+<div class="relative grid grid-cols-4 gap-0 border border-slate-900 bg-white">
+<div class="absolute top-1/2 left-0 w-full h-px bg-slate-900 -translate-y-1/2 z-0"></div>
+<div class="relative p-8 border-r border-slate-900 z-10 flex flex-col bg-white">
+<div class="mb-6">
+<span class="font-mono text-[11px] font-bold text-slate-400 block mb-2 tracking-widest uppercase">Phase 01</span>
+<span class="font-mono text-xs px-2 py-1 bg-slate-100 border border-slate-200 inline-block">RAW_QUERY</span>
+</div>
+<div class="h-12 flex items-center mb-8">
+<div class="w-full h-px bg-[var(--color-indigo)] relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-[var(--color-indigo)] rounded-full"></div>
+</div>
+</div>
+<h3 class="font-serif font-bold text-lg mb-2">Ingestion</h3>
+<p class="font-sans text-sm leading-relaxed text-slate-600">The engine normalizes technical ambiguity into a high-precision research directive.</p>
+</div>
+<div class="relative p-8 border-r border-slate-900 z-10 flex flex-col bg-white">
+<div class="mb-6">
+<span class="font-mono text-[11px] font-bold text-slate-400 block mb-2 tracking-widest uppercase">Phase 02</span>
+<span class="font-mono text-xs px-2 py-1 bg-slate-100 border border-slate-200 inline-block">DECOMPOSITION</span>
+</div>
+<div class="h-12 flex items-center mb-8">
+<div class="w-full h-px bg-[var(--color-indigo)] relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-[var(--color-indigo)] rounded-full"></div>
+</div>
+</div>
+<h3 class="font-serif font-bold text-lg mb-2">The Syllabus</h3>
+<p class="font-sans text-sm leading-relaxed text-slate-600">Queries are fractured into granular tasks assigned to specialized logical subagents.</p>
+</div>
+<div class="relative p-8 border-r border-slate-900 z-10 flex flex-col bg-white">
+<div class="mb-6">
+<span class="font-mono text-[11px] font-bold text-slate-400 block mb-2 tracking-widest uppercase">Phase 03</span>
+<span class="font-mono text-xs px-2 py-1 bg-indigo-50 border border-[var(--color-indigo)] text-[var(--color-indigo)] inline-block">ADVERSARIAL_REVIEW</span>
+</div>
+<div class="h-12 flex items-center mb-8">
+<div class="w-full h-px bg-[var(--color-indigo)] relative">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-[var(--color-indigo)] rounded-full"></div>
+</div>
+</div>
+<h3 class="font-serif font-bold text-lg mb-2">Logical Audit</h3>
+<p class="font-sans text-sm leading-relaxed text-slate-600">Hostile reviewer agents attempt to invalidate every claim before it reaches the page.</p>
+</div>
+<div class="relative p-8 z-10 flex flex-col bg-white">
+<div class="mb-6">
+<span class="font-mono text-[11px] font-bold text-slate-400 block mb-2 tracking-widest uppercase">Phase 04</span>
+<span class="font-mono text-xs px-2 py-1 bg-slate-100 border border-slate-200 inline-block">MANUSCRIPT</span>
+</div>
+<div class="h-12 flex items-center mb-8">
+<div class="w-1/2 h-px bg-slate-200 relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 border border-slate-300 bg-white rounded-full"></div>
+</div>
+</div>
+<h3 class="font-serif font-bold text-lg mb-2">Synthesis</h3>
+<p class="font-sans text-sm leading-relaxed text-slate-600">The final report is compiled with full provenance, citations, and confidence scores.</p>
+</div>
+</div>
+<div class="mt-12 flex justify-between items-center font-mono text-[10px] text-slate-400 uppercase tracking-[0.2em]">
+<span>[ SYSTEM_CORE_V1.2 ]</span>
+<div class="flex gap-8">
+<span>LATENCY: 420MS</span>
+<span>PRECISION: P=0.992</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+
+</body></html>

@@ -8,16 +8,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Legacy Variables (Keep for Waitlist/WIP pages)
-        surface: 'var(--bg-surface)',
-        border: 'var(--border-primary)',
-        text: 'var(--text-primary)',
+        // AXIOM-ONE paper theme (design lock)
+        paper: '#F9F8F4',
+        ink: '#111111',
+        surface: '#FFFFFF',
+        'teal-success': '#0F766E',
+        'error-red': '#B91C1C',
+        'trace-blue': '#4F46E5',
+        'border-std': '#E5E5E5',
+        muted: '#888888',
+        // Legacy Variables (Keep for archived pages)
+        'bg-surface': 'var(--bg-surface)',
+        'border-primary': 'var(--border-primary)',
+        'text-primary': 'var(--text-primary)',
         'text-secondary': 'var(--text-secondary)',
-        'accent-main': 'var(--accent-primary)',
-        'accent-highlight': 'var(--accent-secondary)',
-
-        // New Design System
-        primary: "#3B82F6", // Electric Blue (Overwrites legacy primary if name conflicts, but legacy was var(--bg-primary))
+        'accent-primary': 'var(--accent-primary)',
+        'accent-secondary': 'var(--accent-secondary)',
+        primary: "#3B82F6",
         accent: "#60A5FA",
         dark: {
             DEFAULT: "#0A0A0B",
@@ -27,10 +34,14 @@ module.exports = {
         }
       },
       fontFamily: {
+        serif: ['Newsreader', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
         display: ["Inter", "sans-serif"],
-        sans: ["IBM Plex Sans", "sans-serif"], // Overrides default sans
-        mono: ["IBM Plex Mono", "monospace"], // Overrides default mono
         signature: ['Dancing Script', 'cursive']
+      },
+      boxShadow: {
+        hard: '4px 4px 0px rgba(0,0,0,0.1)',
       },
       borderRadius: {
         'xs': '0.125rem',

@@ -1,6 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-paper: #F9F8F4;
+  --color-ink: #111111;
+  --color-surface: #FFFFFF;
+  --color-teal: #0F766E;
+  --color-error: #B91C1C;
+  --color-trace: #4F46E5;
+  --color-border-std: #E5E5E5;
+  --font-serif: 'Newsreader', serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --shadow-hard: 4px 4px 0px rgba(0,0,0,0.1);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
 
 /* Scroll snap utilities */
 html {

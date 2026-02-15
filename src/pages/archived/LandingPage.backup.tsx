@@ -265,7 +265,6 @@ export default function LandingPage({ onWaitlistClick, onLoginClick }: LandingPa
                             <div className="w-3 h-3 rounded-full bg-green-500"></div>
                             <span className="text-[11px] font-mono uppercase text-slate-500">Validation Graph</span>
                         </div>
-                         {/* Replace static image with something more abstract/generative or keep placeholder with better context */}
                         <div className="w-full h-48 bg-dark relative overflow-hidden rounded border border-dark-border/50">
                              <DotGrid
                                 size={2}
@@ -358,7 +357,6 @@ export default function LandingPage({ onWaitlistClick, onLoginClick }: LandingPa
                         </a>
                     </div>
                     <div className="relative min-h-[350px] bg-black">
-                        {/* Replaced static image with dynamic abstract visual */}
                         <Metaballs
                             speed={0.3}
                             count={8}
@@ -404,7 +402,6 @@ export default function LandingPage({ onWaitlistClick, onLoginClick }: LandingPa
                     <div className="p-8 md:w-2/5 flex flex-col items-center justify-center bg-dark-card border-l border-dark-border">
                         <button onClick={onWaitlistClick} className="w-full bg-primary text-white py-4 px-6 rounded-sm font-bold text-sm mb-6 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">Request Access</button>
                         <div className="flex -space-x-2">
-                             {/* Placeholder avatars can remain, they are generic enough */}
                             <img alt="Avatar" className="w-8 h-8 rounded-sm border border-dark-border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_pmLcvdPR67LNzXI-RuVcQapaMQlyw6tl_8R8Bu8VnPfRr-mzXP3HF0cTb0F-t_jX0cEfV_43y31zzcdKFCnmElUT2XojvOvKLR1LMX8sZpoQXRaZzPHlWrxFyCShYOqFAzrgFDrdEgYqjks4xTmtIGqbFKC3BrrZmT28Oi313wcKdZ0JzpgkgQCWAZB2quL9RK2CWj4C1QQZ6xvrXRJbtpngQQgHScOECD0h6tB0Hr5H6FoiSnjT4K0e-lAkMWH94Bif3aArPQ"/>
                             <img alt="Avatar" className="w-8 h-8 rounded-sm border border-dark-border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhHGUMp52WnRXThSCnw1_zUC5I3d00TRJbHH1aZxYNF6q25vkK8hIqJqkWtwjBNIhvtPwn5UAaaB_xgPyHe6DGQ0uxLu2rf6bUC4P3GQGLqcwDqjH2dAelg1d9TbSY7SnYxfI5JNIIJbipjgYNPLqZvvYRSodoKJpJafc-obIvnraPiTEgu4aVZMQEwlbeR29yQgGJYXprgQK1Ch6LhHy8OfdAMliOddEY9iAMDV4ymJ4MIfvVJtL2YZMbYgiXhWSPD7qmSdYHrA"/>
                             <img alt="Avatar" className="w-8 h-8 rounded-sm border border-dark-border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9fpBFdFekzksMqCdGMMU02p4RA-Z0R8idJemTTYFrmn8iyRp18yB8K6CQ7OiVHvsX9nYitI5UZ8LWzVvRnSCD-WRjbhfPlvjB__5ZKWiPtBArRTgzB6g0Obg5DXxU26dJWfAfQdFbfyRMB3c6liDChBvyTZdNUld1vHaXirdsII4fytI4XQak5iUsHEJhVwQpbuz5VJuXCLNOrgWXJvpZ0P0-JdHhs1mILk9ws3Xl9_YFPKkxy8hVVSWYWpHKYh2XTfzfI8GvA"/>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AXIOM-ONE | Final Manuscript</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#111111", // Near Black
+                        "background-light": "#F9F8F4", // Warm Paper
+                        "surface": "#FFFFFF",
+                        "text-body": "#333333",
+                        "text-muted": "#888888",
+                        "accent-risk": "#F5F5F0", // Beige for risk block
+                        "accent-error": "#B91C1C",
+                        "accent-success": "#0F766E",
+                    },
+                    fontFamily: {
+                        "serif": ['Newsreader', 'serif'],
+                        "sans": ['Inter', 'sans-serif'],
+                        "mono": ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        "hard": "4px 4px 0px rgba(0,0,0,0.05)",
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .font-serif-heading {
+                @apply font-serif font-semibold tracking-tight;
+            }
+            .prose-axiom {
+                @apply prose prose-lg prose-headings:font-serif prose-headings:font-semibold prose-headings:text-primary prose-p:font-sans prose-p:text-text-body prose-p:leading-relaxed max-w-none;
+            }
+            .citation-ref {
+                @apply relative -top-1 text-xs font-mono text-primary/60 hover:text-primary cursor-pointer no-underline ml-0.5;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .shadow-hard {
+                box-shadow: none !important;
+            }
+            .bg-background-light {
+                background-color: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light min-h-screen text-text-body font-sans antialiased selection:bg-primary/10 selection:text-primary">
+<!-- Sticky Navigation (Top Bar) - No Print -->
+<header class="no-print sticky top-0 z-50 w-full bg-background-light/95 backdrop-blur border-b border-[#E5E5E5] px-6 py-3 flex items-center justify-between h-16">
+<div class="flex items-center gap-3">
+<div class="size-6 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">science</span>
+</div>
+<h2 class="text-primary font-serif font-bold text-lg tracking-tight">AXIOM-ONE</h2>
+<span class="text-text-muted font-mono text-xs px-2 py-0.5 border border-[#E5E5E5] rounded-none">READ ONLY</span>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 h-9 bg-white border border-[#E5E5E5] text-primary text-sm font-bold uppercase tracking-wide hover:bg-[#f0f0f4] transition-colors shadow-hard active:translate-x-[2px] active:translate-y-[2px] active:shadow-none rounded-none">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                Export PDF
+            </button>
+<button class="flex items-center gap-2 px-4 h-9 bg-primary text-white border border-primary text-sm font-bold uppercase tracking-wide hover:bg-black transition-colors shadow-hard active:translate-x-[2px] active:translate-y-[2px] active:shadow-none rounded-none" onclick="window.print()">
+<span class="material-symbols-outlined text-[18px]">print</span>
+                Print
+            </button>
+</div>
+</header>
+<!-- Main Manuscript Container -->
+<main class="w-full max-w-[800px] mx-auto pt-12 pb-24 px-6 md:px-12 flex flex-col gap-10">
+<!-- Metadata Header -->
+<div class="w-full flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-mono text-text-muted uppercase tracking-wider border-b border-[#E5E5E5] pb-8">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                DATE: 2023-10-27
+            </span>
+<span class="w-px h-3 bg-[#E5E5E5]"></span>
+<span class="flex items-center gap-1 text-accent-success/80">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                CONFIDENCE: p=0.92
+            </span>
+<span class="w-px h-3 bg-[#E5E5E5]"></span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">attach_money</span>
+                COST: $0.14
+            </span>
+<span class="w-px h-3 bg-[#E5E5E5]"></span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+                RUNTIME: 42.3s
+            </span>
+</div>
+<!-- Document Content -->
+<article class="flex flex-col gap-8">
+<!-- H1 Title -->
+<header>
+<h1 class="font-serif text-4xl md:text-5xl font-semibold text-primary leading-[1.1] mb-6">
+                    Analysis: Gallium Oxide Supply Chain Impact on 2026 EV Markets
+                </h1>
+<div class="flex items-center gap-2 text-sm text-text-muted font-mono">
+<span>QUERY_ID: 0x8F2A9C</span>
+<span>•</span>
+<span>DEPTH: HIGH_RIGOR</span>
+</div>
+</header>
+<!-- Executive Summary -->
+<section>
+<h2 class="font-serif text-2xl font-semibold text-primary mb-4 border-b border-[#E5E5E5] pb-2 inline-block">Executive Summary</h2>
+<p class="font-serif text-xl leading-relaxed text-primary/90 italic border-l-2 border-primary pl-6 py-1">
+                    The projected scarcity of Gallium Oxide (Ga2O3) wide-bandgap semiconductors presents a critical bottleneck for 800V EV architectures in Q3 2026. While silicon carbide (SiC) remains dominant, the specific thermal efficiency gains of Ga2O3 for traction inverters creates a high-leverage supply risk, particularly given current refining concentration in East Asia.
+                </p>
+</section>
+<!-- Epistemic Risk Block (What Could Be Wrong) -->
+<div class="print-break-inside-avoid bg-accent-risk border border-[#E5E5E5] p-6 shadow-hard mb-4">
+<div class="flex items-center gap-3 mb-4 text-[#854D0E]">
+<span class="material-symbols-outlined">warning</span>
+<h3 class="font-mono text-sm font-bold uppercase tracking-wide">Epistemic Risk Analysis: What Could Be Wrong</h3>
+</div>
+<ul class="space-y-3">
+<li class="flex items-start gap-3 text-sm font-sans text-text-body leading-relaxed">
+<span class="font-mono text-text-muted mt-0.5">01.</span>
+<span>
+<strong>Reliability of Q3 Mining Data:</strong> The model relies on publicly available export quotas which may lag actual production capacity by 3-6 months.
+                        </span>
+</li>
+<li class="flex items-start gap-3 text-sm font-sans text-text-body leading-relaxed">
+<span class="font-mono text-text-muted mt-0.5">02.</span>
+<span>
+<strong>Geopolitical Assumptions:</strong> The forecast assumes a stable trade environment between major refining hubs. Sanctions or tariff escalations are not modeled in the baseline scenario.
+                        </span>
+</li>
+<li class="flex items-start gap-3 text-sm font-sans text-text-body leading-relaxed">
+<span class="font-mono text-text-muted mt-0.5">03.</span>
+<span>
+<strong>Substitution Rate:</strong> Rapid advancements in diamond-based semiconductors could displace Ga2O3 demand faster than historical substitution curves suggest.
+                        </span>
+</li>
+</ul>
+</div>
+<!-- Main Body Text -->
+<section class="prose-axiom text-[17px] leading-[1.6]">
+<h3 class="text-xl font-serif font-semibold mt-8 mb-4">1. Supply Chain Architecture &amp; Vulnerabilities</h3>
+<p>
+                    The current supply chain for ultra-wide bandgap materials is highly centralized. Approximately 78% of precursor refining capacity is located within a single geographic zone<sup class="citation-ref">[1]</sup>. This creates a single point of failure for downstream automotive OEMs integrating next-generation traction inverters. Unlike Silicon Carbide, which has seen distributed investment across Europe and North America, Gallium Oxide capacity expansion has been capital-constrained.
+                </p>
+<p>
+                    Analysis of import logs suggests that Tier-1 suppliers are currently stockpiling raw substrate inventory at rates 40% above the 5-year average<sup class="citation-ref">[2]</sup>. This behavior historically precedes a supply squeeze, correlating strongly with the pre-shortage patterns observed in the 2021 chip crisis.
+                </p>
+<h3 class="text-xl font-serif font-semibold mt-8 mb-4">2. Technical Efficiency vs. Availability</h3>
+<p>
+                    The Baliga Figure of Merit (BFOM) for Ga2O3 indicates a theoretical efficiency limit significantly higher than SiC. However, the lack of native p-type doping remains a significant hurdle for mass commercialization<sup class="citation-ref">[3]</sup>. Our synthesis indicates that while the material science is mature enough for unipolar devices (SBDs), the full MOSFET implementation required for main inverters is likely delayed until early 2027.
+                </p>
+<p>
+                    Consequently, the "2026 Impact" is likely to be felt primarily in On-Board Chargers (OBC) and DC-DC converters rather than the main traction drive, mitigating the total volume risk but creating specific component shortages.
+                </p>
+</section>
+<!-- Assumptions Collapsible -->
+<details class="group border border-[#E5E5E5] bg-white open:shadow-hard transition-all duration-200 cursor-pointer print-break-inside-avoid">
+<summary class="flex items-center justify-between p-4 list-none select-none">
+<span class="font-mono text-sm font-medium text-primary uppercase tracking-wide flex items-center gap-2">
+<span class="material-symbols-outlined text-text-muted">tune</span>
+                        View Base Priors &amp; Axioms
+                    </span>
+<span class="material-symbols-outlined text-text-muted transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4 pt-0 border-t border-[#E5E5E5] mt-2">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+<div class="p-3 bg-background-light border border-[#E5E5E5]">
+<p class="font-mono text-xs text-text-muted uppercase mb-1">Market Growth Rate</p>
+<p class="font-sans text-sm font-medium">CAGR 12.5% (Baseline)</p>
+</div>
+<div class="p-3 bg-background-light border border-[#E5E5E5]">
+<p class="font-mono text-xs text-text-muted uppercase mb-1">Tech Readiness Level</p>
+<p class="font-sans text-sm font-medium">TRL 7 (System Prototype)</p>
+</div>
+<div class="p-3 bg-background-light border border-[#E5E5E5]">
+<p class="font-mono text-xs text-text-muted uppercase mb-1">Time Horizon</p>
+<p class="font-sans text-sm font-medium">Q1 2024 - Q4 2026</p>
+</div>
+<div class="p-3 bg-background-light border border-[#E5E5E5]">
+<p class="font-mono text-xs text-text-muted uppercase mb-1">Economic Model</p>
+<p class="font-sans text-sm font-medium">Rational Agent / Nash Equilibrium</p>
+</div>
+</div>
+</div>
+</details>
+<!-- References / Bibliography -->
+<footer class="mt-12 pt-8 border-t-2 border-primary">
+<h3 class="font-serif text-lg font-bold text-primary mb-6">References</h3>
+<ol class="list-decimal list-outside ml-5 space-y-4 font-serif text-sm text-text-body">
+<li class="pl-2">
+<span class="block">
+                            Zhang, H., &amp; Miller, T. (2023). <em>"Wide-Bandgap Semiconductor Supply Chains: A Geopolitical Analysis."</em> Journal of Strategic Trade, 14(2), 45-67.
+                        </span>
+</li>
+<li class="pl-2">
+<span class="block">
+                            Global Semiconductor Alliance. (2023). <em>Q3 Raw Material Inventory Report.</em> Retrieved from GSA Database.
+                        </span>
+</li>
+<li class="pl-2">
+<span class="block">
+                            Higashiwaki, M. (2022). <em>"Current Status of Ga2O3 Power Devices."</em> Appl. Phys. Lett. 118, 200501.
+                        </span>
+</li>
+<li class="pl-2">
+<span class="block">
+                             DOE Critical Minerals Assessment. (2023). <em>"Gallium and Germanium Supply Risk Matrix."</em> U.S. Department of Energy.
+                        </span>
+</li>
+</ol>
+</footer>
+<!-- Final Footer Branding -->
+<div class="mt-12 flex justify-center pb-8 opacity-40">
+<div class="flex flex-col items-center gap-2">
+<span class="material-symbols-outlined text-3xl">science</span>
+<span class="font-mono text-[10px] uppercase tracking-[0.2em]">Generated by AXIOM-ONE</span>
+</div>
+</div>
+</article>
+</main>
+</body></html>

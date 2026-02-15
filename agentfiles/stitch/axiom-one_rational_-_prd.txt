@@ -1,0 +1,218 @@
+# AXIOM-ONE Rational
+
+## Product Overview
+
+**The Pitch:** A research-grade reasoning engine that treats every query as an evolving academic thesis. Instead of chat, it builds a dynamic document where tasks become chapters, reasoning becomes footnotes, and errors are flagged like peer-review red-lines.
+
+**For:** Principal researchers, intelligence analysts, and rigorous knowledge workers who prioritize epistemic accuracy over conversational fluency.
+
+**Device:** Desktop (Optimized for 1440px+)
+
+**Design Direction:** "The Rational Document." A blend of high-end editorial typography and terminal-grade precision. Think *The New England Journal of Medicine* rendered in a minimal IDE.
+
+**Inspired by:** *Substack's editor*, *Obsidian*, *arXiv papers*, *TeX typesetting systems*.
+
+---
+
+## Screens
+
+- **Screen 1: The Thesis Statement (Input):** A minimalist focus mode for defining the core research objective with parameter controls.
+- **Screen 2: The Living Document (Active):** Split-pane core interface; left-side structural outline, right-side continuously synthesizing paper.
+- **Screen 3: The Adversarial Trace (Inspection):** A deep-dive modal exposing the raw "subagent" logic, peer validation logs, and JSON artifacts.
+- **Screen 4: The Final Manuscript (Report):** A static, export-ready view of the synthesized answer with formal citation blocks and confidence metrics.
+
+---
+
+## Key Flows
+
+**Flow: Executing a Complex Query**
+
+1.  User starts on **The Thesis Statement** -> Enters "Analyze the impact of Gallium Oxide wafer supply chains on 2026 EV markets."
+2.  User hits `ENTER` -> Transition to **The Living Document**.
+3.  Left panel populates with **Task Graph** (Decomposition).
+4.  Right panel begins streaming text. **Margin Notes** appear in red (validation flags) and gray (context).
+5.  User clicks a specific task node in Left Panel -> **The Adversarial Trace** overlay slides in.
+6.  User reviews raw logic, closes overlay.
+7.  Process completes -> View updates to **The Final Manuscript**.
+
+---
+
+<details>
+<summary>Design System</summary>
+
+## Color Palette
+
+- **Primary:** `#111111` - Headlines, main text (Near Black)
+- **Background:** `#F9F8F4` - Page background (Warm Paper)
+- **Surface:** `#FFFFFF` - Active cards, input fields (Pure White)
+- **Text:** `#333333` - Body copy
+- **Muted:** `#888888` - Metadata, timestamps, inactive states
+- **Accent (Validation):** `#B91C1C` - Error flags, "Circular Logic", "Citation Needed" (Crimson)
+- **Accent (Success):** `#0F766E` - Validated logic, high confidence (Teal)
+- **Accent (Trace):** `#4F46E5` - Active processing, subagent links (Indigo)
+
+## Typography
+
+**Philosophy:** Digital Typesetting. High contrast between structural serif headings and utilitarian monospaced data.
+
+- **Headings:** *Newsreader*, 600 weight.
+    - H1: 42px (tight tracking)
+    - H2: 32px
+    - H3: 24px
+- **Body:** *Inter*, 400 weight, 17px, 160% line-height. (Highly legible reading).
+- **Data/Code:** *JetBrains Mono*, 400 weight, 13px. (Raw traces, JSON, IDs).
+- **Margin Notes:** *Inter*, 500 weight, 12px. (Validation commentary).
+
+**Style Notes:** Sharp 1px borders, 0px border-radius (brutalist/academic), box-shadows are hard-edged (`4px 4px 0px rgba(0,0,0,0.1)`) rather than diffuse.
+
+## Design Tokens
+
+```css
+:root {
+  --color-ink: #111111;
+  --color-paper: #F9F8F4;
+  --color-surface: #FFFFFF;
+  --color-error: #B91C1C;
+  --color-mono: #888888;
+  
+  --font-serif: 'Newsreader', serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --border-std: 1px solid #E5E5E5;
+  --border-focus: 1px solid #111111;
+  
+  --shadow-hard: 4px 4px 0px rgba(0,0,0,0.05);
+  --spacing-unit: 8px;
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary>Screen Specifications</summary>
+
+### Screen 1: The Thesis Statement
+
+**Purpose:** Intent capture. Establishes the seriousness of the query.
+
+**Layout:** Centered vertically and horizontally on a `#F9F8F4` background.
+
+**Key Elements:**
+- **The Prompt:** Large input area (no border, transparent bg). Text: *Newsreader*, 32px, `#111111`. Placeholder: "Define the research objective..."
+- **Configuration Toggle:** Row of pills below input. `[Epistemic Rigor: High]`, `[Depth: Deep]`, `[Format: Brief]`. Font: *JetBrains Mono* 12px.
+- **Start Button:** Floating action button, right-aligned. Label: `INITIALIZE_RUN`. Style: Black background, white mono text, sharp corners.
+
+**States:**
+- **Empty:** Cursor blinking. Minimalist.
+- **Typing:** Text fills in serif font.
+- **Loading:** Input locks, button changes to `DECOMPOSING...`
+
+**Interactions:**
+- **Focus Input:** Subtle darkening of the background.
+- **Enter:** The input field physically moves to the top of the screen to become the H1 of the next screen.
+
+**Responsive:**
+- **Desktop:** 800px max-width centered.
+
+---
+
+### Screen 2: The Living Document (Main View)
+
+**Purpose:** Real-time observation of the research process. The core workspace.
+
+**Layout:** Two-column split.
+- **Left (25%):** "The Syllabus" (Task Graph).
+- **Right (75%):** "The Manuscript" (Synthesis & Validation).
+
+**Key Elements (Left Panel - The Syllabus):**
+- **Structure:** Tree view connected by thin angular lines.
+- **Nodes:** Each subagent task is a list item.
+    - Active: Spinning mono-loader `[-]`.
+    - Complete: Checkmark.
+    - Failed: Red `x`.
+- **Labels:** *JetBrains Mono*, 13px. e.g., `> 01_fetch_market_data`, `> 02_validate_sources`.
+
+**Key Elements (Right Panel - The Manuscript):**
+- **Header:** The user's prompt as H1 (*Newsreader*).
+- **Content Stream:** Paragraphs generating in real-time (*Inter*).
+- **Margin Notes:** A 200px column on the far right reserved for validation.
+    - **Validation Flag:** Small card floating next to the relevant paragraph.
+    - **Style:** Red left border. Text: "Potential circular logic detected in source B."
+- **Inline Footnotes:** Citations appear as super-script numbers `[1]`, expanding on hover.
+
+**States:**
+- **Streaming:** Text cursor blinks at end of stream. Previous paragraphs turn from gray to black as confidence confirms.
+- **Paused:** "Research Paused" banner at top.
+
+**Interactions:**
+- **Click Syllabus Node:** Scrolls Right Panel to relevant section OR opens Screen 3 (Trace) if strictly technical.
+- **Hover Margin Note:** Highlights the sentence in the text body that triggered the flag.
+
+---
+
+### Screen 3: The Adversarial Trace (Modal)
+
+**Purpose:** Radical transparency. Proving the work of a single subagent.
+
+**Layout:** Slide-over panel from the right, taking up 50% of screen width.
+
+**Key Elements:**
+- **Header:** "Subagent ID: 04-B" / "Task: Cross-reference lithium spot prices".
+- **Raw Input:** Block of code displaying the prompt sent to the agent.
+- **Reasoning Chain:** Step-by-step logic log.
+    - `THOUGHT:` [Blue text] "I need to verify the date of the report."
+    - `ACTION:` [Mono text] `search_tool("lithium price Q3 2024")`
+    - `OBSERVATION:` [Gray text] "API returned 404..."
+- **Hostile Reviewer Block:** Distinct section at bottom with red background tint.
+    - Header: "Peer Review Log"
+    - Content: "Agent attempted to hallucinate value for Q4. Correction applied."
+
+**Components:**
+- **Log Line:** Mono font, 13px, tight spacing.
+- **Artifact Link:** "Download JSON" button (Outline style).
+
+**Interactions:**
+- **Click Overlay (Outside):** Closes modal.
+- **Copy Log:** Button to copy full trace to clipboard.
+
+---
+
+### Screen 4: The Final Manuscript
+
+**Purpose:** Consumption and export. The "Clean" view.
+
+**Layout:** Single column, centered, max-width 700px. Reading optimized.
+
+**Key Elements:**
+- **Meta-Header:**
+    - `Date: 2023-10-27` | `Confidence: p=0.92` | `Cost: $0.14`
+    - Font: *JetBrains Mono*, 12px, Muted.
+- **Executive Summary:** H2 (*Newsreader*). Bold, concise findings.
+- **"What Could Be Wrong":** A dedicated, beige-background (`#F5F5F0`) block.
+    - Icon: ⚠️
+    - Content: Bulleted list of epistemic risks or missing data points.
+- **Assumptions Block:** Collapsible details element listing core priors.
+- **References:** Academic style bibliography at the bottom.
+
+**States:**
+- **Export:** Click "Print/PDF" -> CSS print stylesheet removes UI elements, renders purely as a paper.
+
+</details>
+
+---
+
+<details>
+<summary>Build Guide</summary>
+
+**Stack:** HTML + Tailwind CSS v3 (using `@tailwindcss/typography` plugin for the prose)
+
+**Build Order:**
+1.  **Screen 2 (The Living Document):** This defines the core layout grid (Side nav + Main content + Margins) and the typography scale. It is the hardest to get right visually.
+2.  **Screen 4 (Final Manuscript):** Reuses the typography from Screen 2 but simplifies layout.
+3.  **Screen 3 (Adversarial Trace):** Introduces the technical/mono components.
+4.  **Screen 1 (Thesis Statement):** Simple entry point, relies on the already established serif/mono interplay.
+
+</details>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AXIOM-ONE - The Thesis Statement</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5247eb", // Used for accents/active states per config
+                        "ink": "#111111", // Deep black for text
+                        "paper": "#F9F8F4", // Warm paper background
+                        "surface": "#FFFFFF",
+                        "error": "#B91C1C",
+                        "muted": "#888888",
+                        "border-std": "#E5E5E5",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "serif": ["Newsreader", "serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    boxShadow: {
+                        "hard": "4px 4px 0px rgba(0,0,0,0.05)",
+                        "hard-hover": "6px 6px 0px rgba(82, 71, 235, 0.2)",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "2px",
+                        "sm": "2px",
+                        "md": "4px",
+                        "lg": "8px",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Styles for specific typography needs */
+        .font-serif-input {
+            font-family: 'Newsreader', serif;
+            font-variation-settings: "opsz" 32;
+        }
+        
+        /* Hide scrollbar for textarea */
+        textarea {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        textarea::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Brutalist focus rings */
+        .focus-ring-sharp:focus-within {
+            outline: 2px solid #5247eb;
+            outline-offset: 2px;
+        }
+
+        /* Animation for the cursor blink */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .animate-blink {
+            animation: blink 1.2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-paper text-ink min-h-screen flex flex-col antialiased selection:bg-primary/20 selection:text-primary">
+<!-- Top Meta Bar -->
+<header class="w-full px-6 py-4 flex justify-between items-center fixed top-0 left-0 z-50 mix-blend-multiply opacity-60">
+<div class="flex items-center gap-3">
+<div class="size-3 bg-ink"></div>
+<span class="font-mono text-xs tracking-widest uppercase">AXIOM-ONE // SYSTEM_READY</span>
+</div>
+<div class="flex items-center gap-6 font-mono text-xs">
+<span class="flex items-center gap-1">
+<span class="size-1.5 rounded-full bg-emerald-500"></span>
+                API: ONLINE
+            </span>
+<span class="text-muted">v2.4.0</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center w-full px-4 sm:px-8 relative">
+<!-- Center Container -->
+<div class="w-full max-w-[800px] flex flex-col gap-12 group/input-area transition-all duration-500">
+<!-- Research Input Section -->
+<div class="relative w-full">
+<!-- Label/Prompt -->
+<div class="flex items-center gap-2 mb-4 text-primary font-mono text-xs font-medium tracking-wide opacity-0 transform -translate-y-2 group-focus-within/input-area:opacity-100 group-focus-within/input-area:translate-y-0 transition-all duration-300">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+<span>ENTER_THESIS_STATEMENT</span>
+</div>
+<!-- Textarea -->
+<div class="relative">
+<textarea class="w-full bg-transparent border-none p-0 text-3xl md:text-[42px] leading-[1.15] font-serif-input font-medium text-ink placeholder:text-muted/40 focus:ring-0 resize-none min-h-[120px] overflow-hidden outline-none tracking-tight" id="thesis-input" placeholder="Define the research objective..." rows="2" spellcheck="false"></textarea>
+<!-- Blinking Cursor Indicator (Visual flair) -->
+<div class="absolute -left-6 top-3 h-8 w-0.5 bg-primary opacity-0 group-focus-within/input-area:opacity-100 group-focus-within/input-area:animate-blink transition-opacity duration-200 hidden md:block"></div>
+</div>
+<!-- Input Decorator Line -->
+<div class="h-px w-full bg-border-std mt-4 relative overflow-hidden">
+<div class="absolute inset-0 bg-ink transform -translate-x-full group-focus-within/input-area:translate-x-0 transition-transform duration-700 ease-out"></div>
+</div>
+</div>
+<!-- Configuration Controls -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 opacity-60 group-focus-within/input-area:opacity-100 transition-opacity duration-500">
+<!-- Parameters -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Pill 1: Rigor -->
+<button class="group flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-std hover:border-ink transition-colors shadow-sm hover:shadow-hard">
+<span class="font-mono text-[11px] uppercase text-muted group-hover:text-ink tracking-wider">RIGOR:</span>
+<span class="font-mono text-[11px] font-bold text-ink">HIGH</span>
+<span class="material-symbols-outlined text-[14px] text-muted group-hover:text-primary">expand_more</span>
+</button>
+<!-- Pill 2: Depth -->
+<button class="group flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-std hover:border-ink transition-colors shadow-sm hover:shadow-hard">
+<span class="font-mono text-[11px] uppercase text-muted group-hover:text-ink tracking-wider">DEPTH:</span>
+<span class="font-mono text-[11px] font-bold text-ink">DEEP_DIVE</span>
+<span class="material-symbols-outlined text-[14px] text-muted group-hover:text-primary">expand_more</span>
+</button>
+<!-- Pill 3: Format -->
+<button class="group flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-std hover:border-ink transition-colors shadow-sm hover:shadow-hard">
+<span class="font-mono text-[11px] uppercase text-muted group-hover:text-ink tracking-wider">FORMAT:</span>
+<span class="font-mono text-[11px] font-bold text-ink">ACADEMIC</span>
+<span class="material-symbols-outlined text-[14px] text-muted group-hover:text-primary">expand_more</span>
+</button>
+</div>
+<!-- Action Button -->
+<button class="relative group flex items-center gap-3 pl-5 pr-4 py-2 bg-ink text-white hover:bg-primary transition-colors shadow-hard hover:shadow-hard-hover active:translate-y-[2px] active:translate-x-[2px] active:shadow-none">
+<span class="font-mono text-xs font-bold tracking-widest uppercase">INITIALIZE_RUN</span>
+<div class="h-4 w-px bg-white/20"></div>
+<span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Background texture/elements -->
+<div class="fixed bottom-0 right-0 p-8 z-0 pointer-events-none opacity-20">
+<svg class="text-ink" fill="none" height="200" viewbox="0 0 200 200" width="200" xmlns="http://www.w3.org/2000/svg">
+<path d="M199 1V199H1V1" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1"></path>
+<path d="M0 200L200 0" stroke="currentColor" stroke-width="0.5"></path>
+<rect height="40" stroke="currentColor" stroke-width="1" width="40" x="150" y="150"></rect>
+<text fill="currentColor" font-family="JetBrains Mono" font-size="10" x="10" y="190">GRID_SYSTEM_01</text>
+</svg>
+</div>
+<!-- Decorative Corner Marks (Print Marks) -->
+<div class="fixed top-8 left-8 w-4 h-4 border-l border-t border-ink/30"></div>
+<div class="fixed top-8 right-8 w-4 h-4 border-r border-t border-ink/30"></div>
+<div class="fixed bottom-8 left-8 w-4 h-4 border-l border-b border-ink/30"></div>
+<div class="fixed bottom-8 right-8 w-4 h-4 border-r border-b border-ink/30"></div>
+<!-- Script to auto-resize textarea -->
+<script>
+        const textarea = document.getElementById('thesis-input');
+        
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Initialize focus for user
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                textarea.focus();
+            }, 500);
+        });
+    </script>
+</body></html>
