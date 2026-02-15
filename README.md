@@ -1,8 +1,9 @@
-# AXIOM-ONE
+<img width="1663" height="797" alt="image" src="https://github.com/user-attachments/assets/4a4b20f7-a4d9-4a68-9b75-4f6983ed7945" /># AXIOM-ONE
 ### A Research-Grade Reasoning System (Not a Chatbot)
 
-![Axiom-One Hero](<img width="1663" height="797" alt="image" src="https://github.com/user-attachments/assets/122aa1c0-8846-4f16-b9ba-48414b2e7993" />
-)
+<img width="1663" height="797" alt="image" src="https://github.com/user-attachments/assets/a7399ed7-7755-49f2-bdda-584eb6ce05f2" />
+
+
 
 > **"Build a thinking-first research agent that decomposes problems, runs multi-step reasoning loops, validates its own outputs, and exposes the entire thought pipeline to the user."**
 
