@@ -18,3 +18,14 @@ export enum ResearchStatus {
   COMPLETED = 'COMPLETED',
   ERROR = 'ERROR'
 }
+
+// Extend ImportMeta for Vite environment variables
+declare global {
+  interface ImportMeta {
+    env: {
+      [key: string]: string | undefined;
+      VITE_GEMINI_API_KEY?: string;
+      GEMINI_API_KEY?: string;
+    };
+  }
+}
