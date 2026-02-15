@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AXIOM-ONE | Rational Logic Audit</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'paper': '#F9F8F4',
+                        'ink': '#111111',
+                        'surface': '#FFFFFF',
+                        'border-std': '#E5E5E5',
+                        'teal-success': '#0F766E',
+                    },
+                    fontFamily: {
+                        'serif': ['Newsreader', 'serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'hard': '4px 4px 0px rgba(0,0,0,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-paper text-ink selection:bg-ink selection:text-paper antialiased;
+            }
+        }
+        .bento-card {
+            @apply bg-surface border border-border-std p-6 shadow-hard transition-transform hover:-translate-y-1 hover:-translate-x-1;
+        }
+        .process-node {
+            @apply bg-surface border border-border-std p-6 shadow-hard flex flex-col h-full;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative">
+<div class="fixed top-6 left-6 flex items-center gap-2 font-mono text-[10px] tracking-widest opacity-40 z-50">
+<div class="w-2 h-2 bg-ink"></div>
+<span>SYSTEM_READY_V1.0.4</span>
+</div>
+<div class="fixed top-6 right-6 font-mono text-[10px] tracking-widest opacity-40 z-50">
+<span>GRID_SYSTEM_01 // [1440PX_OPT]</span>
+</div>
+<div class="fixed bottom-6 left-6 font-mono text-[10px] tracking-widest opacity-40 z-50">
+<span>EST_2024 // TRACEABILITY_PROTOCOL</span>
+</div>
+<div class="fixed inset-0 pointer-events-none opacity-[0.03]" style="background-image: radial-gradient(#111 0.5px, transparent 0.5px); background-size: 24px 24px;"></div>
+<header class="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 relative">
+<div class="max-w-5xl w-full">
+<h1 class="font-serif text-[120px] md:text-[180px] leading-[0.9] tracking-tighter mb-8 italic">
+                AXIOM-ONE
+            </h1>
+<p class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase opacity-60 mb-12">
+                // DECENTRALIZED_LOGIC // ABSOLUTE_TRACEABILITY
+            </p>
+<button class="bg-ink text-paper px-10 py-5 font-mono text-sm font-bold tracking-widest flex items-center gap-4 mx-auto hover:bg-neutral-800 transition-colors">
+                INITIALIZE_AUDIT
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</header>
+<section class="max-w-6xl mx-auto px-6 pb-24">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<div class="md:col-span-7 bento-card flex flex-col justify-between min-h-[300px]">
+<div>
+<span class="font-mono text-[10px] uppercase tracking-widest text-neutral-400 block mb-2">Protocol_01</span>
+<h3 class="font-serif text-3xl mb-4">Adversarial Trace</h3>
+<p class="font-sans text-neutral-600 max-w-md leading-relaxed">Expose the raw subagent logic and peer validation logs for radical transparency in every reasoning step.</p>
+</div>
+<div class="mt-8 bg-neutral-50 p-4 border border-border-std font-mono text-[11px] leading-relaxed overflow-hidden">
+<div class="flex gap-2 text-blue-600 mb-1">
+<span>THOUGHT:</span>
+<span class="text-neutral-500">I need to verify the lithography supply chain timeline...</span>
+</div>
+<div class="flex gap-2 text-ink">
+<span class="opacity-40">&gt;</span>
+<span>search_tool("ASML 2026 production roadmap")</span>
+</div>
+<div class="flex gap-2 text-teal-success mt-1">
+<span>VALIDATE:</span>
+<span class="text-neutral-500">Source verified. Confidence p=0.98.</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-5 bento-card flex flex-col">
+<span class="font-mono text-[10px] uppercase tracking-widest text-neutral-400 block mb-2">Interface_02</span>
+<h3 class="font-serif text-3xl mb-4">Living Manuscripts</h3>
+<p class="font-sans text-neutral-600 leading-relaxed mb-6">Watch your research evolve as a dynamic paper with continuous synthesis.</p>
+<div class="flex-grow border-l border-neutral-200 pl-4 py-2 space-y-4">
+<div class="h-2 w-3/4 bg-neutral-200 animate-pulse"></div>
+<div class="h-2 w-full bg-neutral-100"></div>
+<div class="h-2 w-5/6 bg-neutral-100"></div>
+<div class="flex items-center gap-2">
+<span class="inline-block w-1.5 h-4 bg-ink animate-pulse"></span>
+<span class="font-mono text-[10px] text-neutral-400">SYNTHESIZING...</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-12 bento-card flex flex-col md:flex-row items-center justify-between gap-8 py-10">
+<div class="max-w-xl">
+<div class="flex items-center gap-3 mb-4">
+<div class="flex items-center justify-center w-8 h-8 rounded-full bg-teal-success text-paper">
+<span class="material-symbols-outlined text-lg">check</span>
+</div>
+<span class="font-mono text-[10px] uppercase tracking-widest text-teal-success">VERIFIED_LOGIC</span>
+</div>
+<h3 class="font-serif text-4xl mb-4">Zero-Hallucination Protocol</h3>
+<p class="font-sans text-neutral-600 text-lg leading-relaxed">A research-grade engine that prioritizes epistemic accuracy over conversational fluency, treating every query as an academic thesis.</p>
+</div>
+<div class="flex flex-col gap-2 font-mono text-[11px] w-full md:w-auto">
+<div class="border border-border-std p-3 bg-paper flex justify-between gap-12">
+<span class="text-neutral-400">CROSS_REF_COUNT</span>
+<span>1,240</span>
+</div>
+<div class="border border-border-std p-3 bg-paper flex justify-between gap-12">
+<span class="text-neutral-400">LOGICAL_CONSISTENCY</span>
+<span class="text-teal-success">99.9%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="max-w-6xl mx-auto px-6 pb-32">
+<div class="text-center mb-16">
+<h2 class="font-serif text-5xl md:text-6xl italic">The Rational Path</h2>
+<div class="h-px w-24 bg-ink/10 mx-auto mt-6"></div>
+</div>
+<div class="flex flex-col md:flex-row items-stretch justify-between gap-0 relative">
+<div class="flex-1">
+<div class="process-node">
+<span class="font-mono text-[10px] tracking-widest text-neutral-400 mb-4 uppercase">Phase 01: Thesis Formulation</span>
+<h4 class="font-serif text-2xl mb-3">Define the Objective</h4>
+<p class="font-sans text-sm text-neutral-500 leading-relaxed mb-6">Establish the logical boundaries and primary hypothesis of the inquiry.</p>
+<div class="bg-neutral-50 border border-border-std p-3">
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono text-[9px] text-neutral-400">INPUT_FIELD</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-neutral-200"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-neutral-200"></div>
+</div>
+</div>
+<div class="font-mono text-[11px] text-ink border-l-2 border-ink pl-2 py-1 italic">
+                            "Analyze the impact of..."
+                        </div>
+</div>
+</div>
+</div>
+<div class="h-12 md:h-auto md:w-16 flex items-center justify-center">
+<div class="w-px h-full md:w-full md:h-px bg-border-std relative">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-paper p-1">
+<span class="material-symbols-outlined text-sm text-neutral-300">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="flex-1">
+<div class="process-node">
+<span class="font-mono text-[10px] tracking-widest text-neutral-400 mb-4 uppercase">Phase 02: Adversarial Trace</span>
+<h4 class="font-serif text-2xl mb-3">Critical Auditing</h4>
+<p class="font-sans text-sm text-neutral-500 leading-relaxed mb-6">Multi-agent peer review cycle to challenge every logical step.</p>
+<div class="space-y-2">
+<div class="flex items-start gap-2">
+<div class="mt-1 w-2 h-2 border-l border-b border-neutral-400"></div>
+<div class="bg-neutral-50 border border-border-std px-2 py-1 font-mono text-[9px]">L01: SOURCE_VERIFY</div>
+</div>
+<div class="flex items-start gap-2 ml-4">
+<div class="mt-1 w-2 h-2 border-l border-b border-neutral-400"></div>
+<div class="bg-teal-50 border border-teal-100 px-2 py-1 font-mono text-[9px] text-teal-700">L02: CONSENSUS_REACHED</div>
+</div>
+<div class="flex items-start gap-2">
+<div class="mt-1 w-2 h-2 border-l border-b border-neutral-400"></div>
+<div class="bg-neutral-50 border border-border-std px-2 py-1 font-mono text-[9px]">L01: SYNTHESIS_GEN</div>
+</div>
+</div>
+</div>
+</div>
+<div class="h-12 md:h-auto md:w-16 flex items-center justify-center">
+<div class="w-px h-full md:w-full md:h-px bg-border-std relative">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-paper p-1">
+<span class="material-symbols-outlined text-sm text-neutral-300">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="flex-1">
+<div class="process-node">
+<span class="font-mono text-[10px] tracking-widest text-neutral-400 mb-4 uppercase">Phase 03: Manuscript Synthesis</span>
+<h4 class="font-serif text-2xl mb-3">Final Output</h4>
+<p class="font-sans text-sm text-neutral-500 leading-relaxed mb-6">Formalization of reasoning into a structured, exportable research document.</p>
+<div class="flex-grow border border-border-std bg-neutral-50 p-3 space-y-2">
+<div class="h-1.5 w-1/3 bg-neutral-300"></div>
+<div class="h-1 w-full bg-neutral-200"></div>
+<div class="h-1 w-full bg-neutral-200"></div>
+<div class="h-1 w-4/5 bg-neutral-200"></div>
+<div class="pt-2 flex justify-between">
+<div class="h-1 w-1/4 bg-neutral-300"></div>
+<div class="h-1 w-1/4 bg-neutral-300"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="border-t border-border-std py-12 px-6">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+<div class="flex items-center gap-4">
+<h2 class="font-serif text-2xl">AXIOM-ONE</h2>
+<span class="font-mono text-[10px] py-1 px-2 border border-border-std">RATIONAL_V1</span>
+</div>
+<nav class="flex flex-wrap gap-8 font-mono text-[11px] tracking-wider uppercase opacity-60">
+<a class="hover:opacity-100" href="#">Documentation</a>
+<a class="hover:opacity-100" href="#">Methodology</a>
+<a class="hover:opacity-100" href="#">API_Access</a>
+<a class="hover:opacity-100" href="#">Terminal_Login</a>
+</nav>
+</div>
+</footer>
+<div class="fixed top-0 left-0 w-8 h-8 border-t border-l border-neutral-300 pointer-events-none"></div>
+<div class="fixed top-0 right-0 w-8 h-8 border-t border-r border-neutral-300 pointer-events-none"></div>
+<div class="fixed bottom-0 left-0 w-8 h-8 border-b border-l border-neutral-300 pointer-events-none"></div>
+<div class="fixed bottom-0 right-0 w-8 h-8 border-b border-r border-neutral-300 pointer-events-none"></div>
+
+</body></html>

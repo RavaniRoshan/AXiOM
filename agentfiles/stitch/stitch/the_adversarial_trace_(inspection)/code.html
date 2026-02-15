@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AXIOM-ONE - Adversarial Trace</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "ink": "#111111",
+                        "paper": "#F9F8F4",
+                        "surface": "#FFFFFF",
+                        "error": "#B91C1C",
+                        "trace": "#4F46E5",
+                        "success": "#0F766E",
+                        "muted": "#888888",
+                        "border-std": "#E5E5E5",
+                    },
+                    fontFamily: {
+                        "serif": ["Newsreader", "serif"],
+                        "sans": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    boxShadow: {
+                        "hard": "4px 4px 0px rgba(0,0,0,0.05)",
+                        "hard-lg": "8px 8px 0px rgba(0,0,0,0.1)",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F9F8F4;
+            color: #111111;
+        }
+        
+        /* Custom scrollbar for the log area to maintain brutalist aesthetic */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F9F8F4;
+            border-left: 1px solid #E5E5E5;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E5E5E5;
+            border: 1px solid #E5E5E5;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #888888;
+        }
+    </style>
+</head>
+<body class="h-screen w-full overflow-hidden flex relative bg-paper">
+<!-- Blurred Background Simulation (Left Side Context) -->
+<div class="flex-1 h-full p-8 opacity-40 select-none pointer-events-none filter blur-[2px] transition-all duration-300">
+<div class="grid grid-cols-4 gap-8 h-full">
+<div class="col-span-1 border-r border-border-std pr-6">
+<div class="space-y-4">
+<div class="h-4 bg-gray-200 w-3/4"></div>
+<div class="h-4 bg-gray-200 w-1/2"></div>
+<div class="h-4 bg-gray-200 w-5/6"></div>
+</div>
+</div>
+<div class="col-span-3">
+<h1 class="font-serif text-4xl mb-6">Gallium Oxide Supply Chains</h1>
+<div class="space-y-4">
+<div class="h-4 bg-gray-200 w-full"></div>
+<div class="h-4 bg-gray-200 w-full"></div>
+<div class="h-4 bg-gray-200 w-5/6"></div>
+<div class="h-4 bg-gray-200 w-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Screen 3: The Adversarial Trace (Modal) -->
+<!-- Slide-over panel taking up 50% width on right -->
+<div class="w-1/2 h-full bg-paper border-l border-ink shadow-hard-lg flex flex-col z-50 absolute right-0 top-0">
+<!-- Header -->
+<div class="shrink-0 p-6 border-b border-border-std bg-paper">
+<div class="flex items-start justify-between mb-2">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-mono text-xs text-trace uppercase tracking-wide">Trace_Mode::Active</span>
+<span class="w-1.5 h-1.5 rounded-full bg-trace animate-pulse"></span>
+</div>
+<h2 class="font-serif text-2xl font-semibold text-ink leading-tight">
+                        Subagent ID: 04-B
+                    </h2>
+<p class="font-sans text-sm text-muted mt-1">Task: Cross-reference lithium spot prices</p>
+</div>
+<div class="flex gap-2">
+<button class="h-8 px-3 border border-border-std hover:border-ink hover:bg-surface transition-colors flex items-center justify-center gap-2 group" title="Copy Log">
+<span class="material-symbols-outlined text-[16px] text-muted group-hover:text-ink">content_copy</span>
+<span class="font-mono text-xs text-muted group-hover:text-ink">COPY</span>
+</button>
+<button class="h-8 w-8 border border-border-std hover:bg-error hover:border-error hover:text-white transition-colors flex items-center justify-center group" title="Close Panel">
+<span class="material-symbols-outlined text-[20px] text-ink group-hover:text-white">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+<!-- Raw Input Block -->
+<div class="p-6 border-b border-border-std bg-surface/50">
+<p class="font-mono text-xs text-muted mb-2 uppercase tracking-wide">Initial_Input_Vector</p>
+<div class="font-mono text-[13px] text-ink bg-white border border-border-std p-4 shadow-hard">
+<span class="text-muted">{</span><br/>
+                      <span class="text-trace">"query"</span>: <span class="text-green-700">"find spot price lithium carbonate"</span>,<br/>
+                      <span class="text-trace">"date_range"</span>: <span class="text-green-700">"Q3 2024"</span>,<br/>
+                      <span class="text-trace">"market"</span>: <span class="text-green-700">"global_indices"</span><br/>
+<span class="text-muted">}</span>
+</div>
+</div>
+<!-- Reasoning Chain (The Log) -->
+<div class="p-6 pb-20 space-y-8">
+<!-- Log Entry 1 -->
+<div class="relative pl-6 border-l border-border-std group">
+<div class="absolute -left-[5px] top-0 w-[9px] h-[9px] bg-white border border-border-std rotate-45 group-hover:border-trace transition-colors"></div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-muted">[14:02:01.050]</span>
+<span class="font-mono text-xs font-bold text-trace bg-trace/10 px-1.5 py-0.5">THOUGHT</span>
+</div>
+<p class="font-mono text-[13px] text-ink leading-relaxed">
+                            I need to locate the specific index for Asian markets to establish a baseline price before checking European delivery premiums.
+                        </p>
+</div>
+</div>
+<!-- Log Entry 2 -->
+<div class="relative pl-6 border-l border-border-std group">
+<div class="absolute -left-[5px] top-0 w-[9px] h-[9px] bg-white border border-border-std rotate-45 group-hover:border-ink transition-colors"></div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-muted">[14:02:02.112]</span>
+<span class="font-mono text-xs font-bold text-ink bg-gray-100 px-1.5 py-0.5 border border-gray-200">ACTION</span>
+</div>
+<div class="font-mono text-[13px] text-ink bg-ink text-white p-3 shadow-hard">
+                            &gt; tool_search("Shanghai Metals Market lithium index Q3 2024")
+                        </div>
+</div>
+</div>
+<!-- Log Entry 3 -->
+<div class="relative pl-6 border-l border-border-std group">
+<div class="absolute -left-[5px] top-0 w-[9px] h-[9px] bg-white border border-border-std rotate-45 group-hover:border-muted transition-colors"></div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-muted">[14:02:05.440]</span>
+<span class="font-mono text-xs font-bold text-muted bg-gray-50 px-1.5 py-0.5 border border-border-std">OBSERVATION</span>
+</div>
+<p class="font-mono text-[13px] text-muted leading-relaxed italic border-l-2 border-border-std pl-3">
+                            404 Error: Endpoint moved or requires renewed authentication token. Partial cached data available from 2024-06-15.
+                        </p>
+</div>
+</div>
+<!-- Log Entry 4 -->
+<div class="relative pl-6 border-l border-border-std group">
+<div class="absolute -left-[5px] top-0 w-[9px] h-[9px] bg-white border border-border-std rotate-45 group-hover:border-trace transition-colors"></div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-muted">[14:02:06.002]</span>
+<span class="font-mono text-xs font-bold text-trace bg-trace/10 px-1.5 py-0.5">THOUGHT</span>
+</div>
+<p class="font-mono text-[13px] text-ink leading-relaxed">
+                            Primary source failed. Retrying with backup source: London Metal Exchange to approximate via arbitrage calculation.
+                        </p>
+</div>
+</div>
+<!-- Log Entry 5 -->
+<div class="relative pl-6 border-l border-border-std group">
+<div class="absolute -left-[5px] top-0 w-[9px] h-[9px] bg-white border border-border-std rotate-45 group-hover:border-ink transition-colors"></div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-muted">[14:02:06.850]</span>
+<span class="font-mono text-xs font-bold text-ink bg-gray-100 px-1.5 py-0.5 border border-gray-200">ACTION</span>
+</div>
+<div class="font-mono text-[13px] text-ink bg-ink text-white p-3 shadow-hard">
+                            &gt; tool_search("LME lithium hydroxide CIF price")
+                        </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Hostile Reviewer Block (Sticky Bottom) -->
+<div class="shrink-0 border-t border-error/30 bg-error/5 p-6 relative">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<h3 class="font-sans text-xs font-bold uppercase tracking-wider">Peer Review Intervention</h3>
+</div>
+<p class="font-serif text-ink text-sm leading-relaxed">
+<span class="font-bold">Logic Correction:</span> Agent attempted to extrapolate missing Q4 data from Q3 trend lines without sufficient volatility modeling. Action blocked. Forced 'Data Unavailable' return state to preserve epistemic integrity.
+                </p>
+<div class="pt-3 flex items-center justify-between border-t border-error/10 mt-1">
+<span class="font-mono text-[11px] text-error/80">SEVERITY: HIGH // INTERVENTION_ID: #9921</span>
+<button class="text-[11px] font-mono text-ink underline hover:text-error transition-colors">
+                        VIEW_RULES
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer / Artifacts -->
+<div class="shrink-0 p-4 border-t border-border-std bg-paper flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+<span class="font-mono text-xs text-muted">System Status: Stable</span>
+</div>
+<button class="font-mono text-xs flex items-center gap-2 px-4 py-2 border border-ink hover:bg-ink hover:text-white transition-all shadow-hard active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">
+<span class="material-symbols-outlined text-[16px]">download</span>
+                DOWNLOAD_JSON_ARTIFACTS
+            </button>
+</div>
+</div>
+</body></html>
