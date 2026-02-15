@@ -1,4 +1,4 @@
-<img width="1663" height="797" alt="image" src="https://github.com/user-attachments/assets/4a4b20f7-a4d9-4a68-9b75-4f6983ed7945" /># AXIOM-ONE
+
 ### A Research-Grade Reasoning System (Not a Chatbot)
 
 <img width="1663" height="797" alt="image" src="https://github.com/user-attachments/assets/a7399ed7-7755-49f2-bdda-584eb6ce05f2" />
