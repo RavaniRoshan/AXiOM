@@ -127,8 +127,10 @@ Requirements:
     return validatedResults;
 
   } catch (error) {
-    console.error("Validation error:", error);
-    console.warn("Using fallback validation");
+    if (import.meta.env.DEV) {
+      console.error("Validation error:", error);
+      console.warn("Using fallback validation");
+    }
     
     // Return fallback validation on error
     return getFallbackValidation(results);

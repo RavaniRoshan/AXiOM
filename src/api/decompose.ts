@@ -145,8 +145,10 @@ Requirements:
     };
 
   } catch (error) {
-    console.error("Decomposition error:", error);
-    console.warn("Using fallback task generation");
+    // Log error in development only
+    if (import.meta.env.DEV) {
+      console.error("Decomposition error:", error);
+    }
 
     // Return fallback tasks on error
     const fallbackTasks = getFallbackTasks(query.question);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Task, TaskGraph, SubagentResult, ReasoningTrace, ResearchReport } from '../api/types';
 import { runResearchExecution, type ExecutionUpdate, type ExecutionStatus } from '../api/orchestrator';
@@ -31,9 +31,11 @@ interface ExecutionHeaderProps {
   onNewQuery: () => void;
   onExport: () => void;
   onRetry?: () => void;
+  onCancel?: () => void;
+  progress: number;
 }
 
-function ExecutionHeader({ runId, status, error, onNewQuery, onExport, onRetry }: ExecutionHeaderProps) {
+function ExecutionHeader({ runId, status, error, onNewQuery, onExport, onRetry, onCancel, progress }: ExecutionHeaderProps) {
   const isRunning = status !== "complete" && status !== "error" && status !== "idle";
 
   return (
@@ -59,7 +61,15 @@ function ExecutionHeader({ runId, status, error, onNewQuery, onExport, onRetry }
           </span>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-3">
+        {isRunning && onCancel && (
+          <button
+            onClick={onCancel}
+            className="flex items-center justify-center h-8 px-4 bg-error-red/10 text-error-red border border-error-red hover:bg-error-red hover:text-white text-xs font-bold font-mono tracking-wide uppercase transition-colors"
+          >
+            Cancel
+          </button>
+        )}
         {error && onRetry && (
           <button
             onClick={onRetry}
@@ -86,14 +96,31 @@ function ExecutionHeader({ runId, status, error, onNewQuery, onExport, onRetry }
   );
 }
 
+// Progress Bar Component
+function ProgressBar({ progress, status }: { progress: number; status: ExecutionStatus }) {
+  const isRunning = status === "executing" || status === "decomposing" || status === "validating" || status === "synthesizing";
+  
+  return (
+    <div className="w-full bg-neutral-100 h-1 mt-0">
+      <div 
+        className={`h-full transition-all duration-500 ease-out ${
+          isRunning ? 'bg-trace-blue' : status === "complete" ? 'bg-teal-success' : status === "error" ? 'bg-error-red' : 'bg-neutral-300'
+        }`}
+        style={{ width: `${Math.max(0, Math.min(100, progress * 100))}%` }}
+      />
+    </div>
+  );
+}
+
 // Task Tree Item Component
 interface TaskTreeItemProps {
   task: ExtendedTask;
   isSelected: boolean;
   onClick: () => void;
+  showOutput?: boolean;
 }
 
-function TaskTreeItem({ task, isSelected, onClick }: TaskTreeItemProps) {
+function TaskTreeItem({ task, isSelected, onClick, showOutput }: TaskTreeItemProps) {
   const statusColor = {
     PENDING: "bg-neutral-100 text-neutral-700",
     EXECUTING: "bg-trace-blue text-white",
@@ -102,28 +129,48 @@ function TaskTreeItem({ task, isSelected, onClick }: TaskTreeItemProps) {
   }[task.status];
 
   return (
-    <button
-      onClick={onClick}
-      className={`w-full text-left p-3 border border-neutral-200 transition-colors ${
-        isSelected ? "bg-paper border-ink" : "hover:bg-paper"
-      }`}
-    >
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-mono text-xs font-bold text-ink">{task.id}</span>
-        <span className={`px-2 py-1 text-[10px] font-mono font-bold rounded ${statusColor}`}>
-          {task.status}
-        </span>
-      </div>
-      <h4 className="font-sans text-sm font-medium text-ink mb-2">{task.title}</h4>
-      {(task.status === "EXECUTING" || task.status === "COMPLETE") && (
-        <div className="w-full bg-neutral-200 h-1.5 rounded-full overflow-hidden">
-          <div
-            className="bg-ink h-full transition-all duration-300"
-            style={{ width: `${task.progress * 100}%` }}
-          />
+    <div className={`border border-neutral-200 transition-all ${
+      isSelected ? "bg-paper border-ink shadow-sm" : "hover:bg-paper"
+    }`}>
+      <button
+        onClick={onClick}
+        className="w-full text-left p-3"
+      >
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-mono text-xs font-bold text-ink">{task.id}</span>
+          <span className={`px-2 py-1 text-[10px] font-mono font-bold rounded ${statusColor}`}>
+            {task.status}
+          </span>
+        </div>
+        <h4 className="font-sans text-sm font-medium text-ink mb-2">{task.title}</h4>
+        {(task.status === "EXECUTING" || task.status === "COMPLETE") && (
+          <div className="w-full bg-neutral-200 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="bg-ink h-full transition-all duration-500 ease-out"
+              style={{ width: `${task.progress * 100}%` }}
+            />
+          </div>
+        )}
+      </button>
+      
+      {/* Live Output Display */}
+      {showOutput && task.output && (
+        <div className="px-3 pb-3 border-t border-neutral-100 mt-2">
+          <p className="font-sans text-xs text-neutral-600 mt-2 line-clamp-3">{task.output}</p>
+          {task.confidence && (
+            <div className="mt-2 flex items-center gap-2">
+              <span className="font-mono text-[10px] text-neutral-400">Confidence:</span>
+              <span className={`font-mono text-[10px] font-bold ${
+                task.confidence >= 0.8 ? 'text-teal-success' : 
+                task.confidence >= 0.6 ? 'text-trace-blue' : 'text-error-red'
+              }`}>
+                {(task.confidence * 100).toFixed(0)}%
+              </span>
+            </div>
+          )}
         </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -134,9 +181,13 @@ interface TaskTreeSidebarProps {
   onSelectTask: (taskId: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  status: ExecutionStatus;
 }
 
-function TaskTreeSidebar({ tasks, selectedTaskId, onSelectTask, isOpen, onClose }: TaskTreeSidebarProps) {
+function TaskTreeSidebar({ tasks, selectedTaskId, onSelectTask, isOpen, onClose, status }: TaskTreeSidebarProps) {
+  const completedCount = tasks.filter(t => t.status === "COMPLETE").length;
+  const executingCount = tasks.filter(t => t.status === "EXECUTING").length;
+
   return (
     <>
       {/* Mobile overlay */}
@@ -150,18 +201,29 @@ function TaskTreeSidebar({ tasks, selectedTaskId, onSelectTask, isOpen, onClose 
         <div className="p-6 border-b border-neutral-200 bg-surface">
           <h2 className="font-serif font-semibold text-xl mb-1 text-ink">The Syllabus</h2>
           <p className="font-sans text-xs text-neutral-500">Hierarchical Task Decomposition</p>
+          {tasks.length > 0 && (
+            <div className="mt-3 flex items-center gap-3 text-xs">
+              <span className="font-mono text-neutral-400">
+                {completedCount}/{tasks.length} Complete
+              </span>
+              {executingCount > 0 && (
+                <span className="font-mono text-trace-blue animate-pulse">
+                  {executingCount} Executing
+                </span>
+              )}
+            </div>
+          )}
         </div>
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-4 space-y-2">
-            {tasks.map((task) => (
-              <TaskTreeItem
-                key={task.id}
-                task={task}
-                isSelected={selectedTaskId === task.id}
-                onClick={() => onSelectTask(task.id)}
-              />
-            ))}
-          </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-2">
+          {tasks.map((task) => (
+            <TaskTreeItem
+              key={task.id}
+              task={task}
+              isSelected={selectedTaskId === task.id}
+              onClick={() => onSelectTask(task.id)}
+              showOutput={selectedTaskId === task.id}
+            />
+          ))}
         </div>
       </aside>
     </>
@@ -176,13 +238,19 @@ interface ManuscriptPanelProps {
   onInspect: () => void;
   question: string;
   isLoading: boolean;
+  currentMessage?: string;
 }
 
-function ManuscriptPanel({ manuscript, confidence, assumptions, onInspect, question, isLoading }: ManuscriptPanelProps) {
+function ManuscriptPanel({ manuscript, confidence, assumptions, onInspect, question, isLoading, currentMessage }: ManuscriptPanelProps) {
   return (
     <article className="flex-1 flex flex-col overflow-hidden">
       <div className="flex items-center justify-between px-4 md:px-8 py-4 md:py-6 border-b border-neutral-200 bg-surface shrink-0">
-        <h2 className="font-serif text-xl md:text-3xl text-ink truncate pr-4">{question}</h2>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-serif text-xl md:text-3xl text-ink truncate pr-4">{question}</h2>
+          {currentMessage && isLoading && (
+            <p className="font-mono text-xs text-trace-blue mt-1 animate-pulse">{currentMessage}</p>
+          )}
+        </div>
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <div className="text-right hidden sm:block">
             <div className="font-mono text-xs text-neutral-500">CONFIDENCE</div>
@@ -203,7 +271,7 @@ function ManuscriptPanel({ manuscript, confidence, assumptions, onInspect, quest
           {isLoading && !manuscript ? (
             <div className="flex flex-col items-center justify-center h-full text-neutral-400">
               <div className="w-16 h-16 border-2 border-neutral-200 border-t-ink rounded-full animate-spin mb-4"></div>
-              <p className="font-mono text-sm">SYNTHESIZING MANUSCRIPT...</p>
+              <p className="font-mono text-sm">{currentMessage || 'INITIALIZING...'}</p>
             </div>
           ) : manuscript ? (
             <div 
@@ -380,8 +448,11 @@ export default function ExecutionDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [executionReport, setExecutionReport] = useState<ResearchReport | null>(null);
+  const [currentMessage, setCurrentMessage] = useState<string>("");
+  const [progress, setProgress] = useState<number>(0);
   
-  // Ref to track if component is mounted
+  // Abort controller ref
+  const abortControllerRef = useRef<AbortController | null>(null);
   const isMounted = useRef(true);
 
   // Redirect if no task graph
@@ -405,33 +476,84 @@ export default function ExecutionDashboard() {
 
     return () => {
       isMounted.current = false;
+      // Abort any ongoing execution
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
     };
   }, [taskGraph, navigate]);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // ESC to close modal
+      if (e.key === 'Escape' && isTraceModalOpen) {
+        setIsTraceModalOpen(false);
+      }
+      
+      // Arrow keys to navigate tasks
+      if (tasks.length > 0) {
+        const currentIndex = selectedTaskId ? tasks.findIndex(t => t.id === selectedTaskId) : -1;
+        
+        if (e.key === 'ArrowDown' && currentIndex < tasks.length - 1) {
+          setSelectedTaskId(tasks[currentIndex + 1]?.id || tasks[0]?.id);
+        } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+          setSelectedTaskId(tasks[currentIndex - 1]?.id);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isTraceModalOpen, tasks, selectedTaskId]);
+
   // Start the research execution
-  const startExecution = async () => {
+  const startExecution = useCallback(async () => {
     if (!question || !taskGraph) return;
 
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+    
     setError(null);
     setStatus("decomposing");
+    setCurrentMessage("Initializing research execution...");
 
     try {
       await runResearchExecution({
         question,
+        abortSignal: abortControllerRef.current.signal,
         onProgress: (update: ExecutionUpdate) => {
           if (!isMounted.current) return;
 
           // Update status
           setStatus(update.status);
+          setCurrentMessage(update.message || "");
+          if (update.progress !== undefined) {
+            setProgress(update.progress);
+          }
 
           // Update tasks based on progress
-          if (update.completedTasks) {
+          if (update.currentTask) {
             setTasks(prev => prev.map(task => {
               if (update.currentTask === task.id) {
-                return { ...task, status: "EXECUTING", progress: 0.5 };
+                return { 
+                  ...task, 
+                  status: "EXECUTING", 
+                  progress: 0.5,
+                  // @ts-ignore
+                  output: update.partialResult?.output || task.output
+                };
               }
               if (update.completedTasks?.includes(task.id)) {
-                return { ...task, status: "COMPLETE", progress: 1 };
+                return { 
+                  ...task, 
+                  status: "COMPLETE", 
+                  progress: 1,
+                  // @ts-ignore
+                  output: update.partialResult?.output || task.output,
+                  // @ts-ignore
+                  confidence: update.partialResult?.confidenceScore || task.confidence
+                };
               }
               return task;
             }));
@@ -468,12 +590,23 @@ export default function ExecutionDashboard() {
     } catch (err) {
       if (!isMounted.current) return;
       
-      console.error("Execution error:", err);
       const errorMessage = err instanceof Error ? err.message : "Execution failed";
-      setError(errorMessage);
+      
+      // Check if it was aborted
+      if (errorMessage.includes("cancelled") || errorMessage.includes("aborted")) {
+        setError("Execution cancelled by user");
+      } else {
+        setError(errorMessage);
+      }
       setStatus("error");
     }
-  };
+  }, [question, taskGraph, navigate]);
+
+  const handleCancel = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  }, []);
 
   const handleNewQuery = () => {
     navigate("/");
@@ -500,12 +633,13 @@ export default function ExecutionDashboard() {
 
   const handleRetry = () => {
     // Reset state and retry
-    setTasks(prev => prev.map(t => ({ ...t, status: "PENDING", progress: 0 })));
+    setTasks(prev => prev.map(t => ({ ...t, status: "PENDING", progress: 0, output: undefined })));
     setManuscript("");
     setConfidence(0);
     setAssumptions([]);
     setTraces({});
     setError(null);
+    setProgress(0);
     startExecution();
   };
 
@@ -519,6 +653,7 @@ export default function ExecutionDashboard() {
           runId={runId} 
           status={status}
           error={error}
+          progress={progress}
           onNewQuery={handleNewQuery} 
           onExport={handleExport}
           onRetry={handleRetry}
@@ -532,11 +667,15 @@ export default function ExecutionDashboard() {
     <div className="h-screen bg-paper flex flex-col overflow-hidden">
       <ExecutionHeader 
         runId={runId} 
-        status={status} 
+        status={status}
+        progress={progress}
         onNewQuery={handleNewQuery} 
         onExport={handleExport}
         onRetry={handleRetry}
+        onCancel={status !== "complete" && status !== "error" ? handleCancel : undefined}
       />
+      
+      <ProgressBar progress={progress} status={status} />
       
       <main className="flex-1 flex overflow-hidden">
         {/* Mobile sidebar toggle */}
@@ -556,6 +695,7 @@ export default function ExecutionDashboard() {
           onSelectTask={handleSelectTask}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          status={status}
         />
         
         <ManuscriptPanel
@@ -564,7 +704,8 @@ export default function ExecutionDashboard() {
           assumptions={assumptions}
           onInspect={handleInspectLogic}
           question={question || "Untitled Research Query"}
-          isLoading={status === "synthesizing" || status === "executing"}
+          isLoading={status === "synthesizing" || status === "executing" || status === "decomposing" || status === "validating"}
+          currentMessage={currentMessage}
         />
       </main>
 

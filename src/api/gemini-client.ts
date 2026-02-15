@@ -140,7 +140,9 @@ export async function callGemini(options: GeminiCallOptions): Promise<GeminiResp
 
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      console.warn(`Gemini API attempt ${attempt + 1} failed:`, lastError.message);
+      if (import.meta.env.DEV) {
+        console.warn(`Gemini API attempt ${attempt + 1} failed:`, lastError.message);
+      }
       
       // Don't retry on authentication errors
       if (lastError.message.includes("API key") || lastError.message.includes("authentication")) {

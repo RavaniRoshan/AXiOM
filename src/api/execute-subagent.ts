@@ -141,8 +141,10 @@ Be honest about uncertainty. If information is limited, say so and lower confide
     };
 
   } catch (error) {
-    console.error(`Subagent execution error for task ${taskId}:`, error);
-    console.warn("Using fallback result");
+    // Log error in development only
+    if (import.meta.env.DEV) {
+      console.error(`Subagent execution error for task ${taskId}:`, error);
+    }
     
     // Return fallback result on error
     return getFallbackResult(taskId, description, context);

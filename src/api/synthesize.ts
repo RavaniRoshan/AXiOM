@@ -163,8 +163,10 @@ Requirements:
     };
 
   } catch (error) {
-    console.error("Synthesis error:", error);
-    console.warn("Using fallback manuscript generation");
+    if (import.meta.env.DEV) {
+      console.error("Synthesis error:", error);
+      console.warn("Using fallback manuscript generation");
+    }
 
     // Calculate confidence without validation
     const overallConfidence = calculateValidatedConfidence(validatedResults, []);

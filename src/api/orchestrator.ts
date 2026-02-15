@@ -43,6 +43,14 @@ export interface ExecutionOptions {
   context?: string;
   onProgress?: ProgressCallback;
   enableParallelExecution?: boolean;
+  abortSignal?: AbortSignal;
+}
+
+// Check if execution should be aborted
+function checkAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) {
+    throw new Error("Execution cancelled by user");
+  }
 }
 
 /**
@@ -52,18 +60,30 @@ async function executeTaskWithTracking(
   task: Task,
   context: string,
   onProgress?: ProgressCallback,
-  completedTasks: string[] = []
+  completedTasks: string[] = [],
+  abortSignal?: AbortSignal
 ): Promise<SubagentResult> {
+  checkAborted(abortSignal);
+  
+  // Calculate progress percentage
+  const totalTasks = 5; // Approximate
+  const baseProgress = 0.2;
+  const progressRange = 0.5;
+  const taskProgress = completedTasks.length / totalTasks;
+  const currentProgress = baseProgress + (taskProgress * progressRange);
+  
   if (onProgress) {
     onProgress({
       status: "executing",
-      progress: 0.2 + (completedTasks.length * 0.5),
+      progress: currentProgress,
       message: `Executing task ${task.id}: ${task.title}`,
       currentTask: task.id,
       completedTasks: [...completedTasks],
     });
   }
 
+  checkAborted(abortSignal);
+  
   const result = await executeSubagent(
     task.id,
     task.description,
@@ -73,6 +93,19 @@ async function executeTaskWithTracking(
 
   // Add title to result for reference
   result.title = task.title;
+  
+  // Send immediate progress update with result
+  if (onProgress) {
+    onProgress({
+      status: "executing",
+      progress: currentProgress + (0.5 / totalTasks),
+      message: `Completed task ${task.id}`,
+      currentTask: task.id,
+      completedTasks: [...completedTasks, task.id],
+      // @ts-ignore - Adding partial result for live updates
+      partialResult: result,
+    });
+  }
 
   return result;
 }
@@ -83,13 +116,16 @@ async function executeTaskWithTracking(
 async function executeTasksInOrder(
   tasks: Task[],
   context: string,
-  onProgress?: ProgressCallback
+  onProgress?: ProgressCallback,
+  abortSignal?: AbortSignal
 ): Promise<Record<string, SubagentResult>> {
   const results: Record<string, SubagentResult> = {};
   const completedTasks: string[] = [];
   const pendingTasks = new Map(tasks.map(t => [t.id, t]));
 
   async function executeTask(taskId: string): Promise<void> {
+    checkAborted(abortSignal);
+    
     const task = pendingTasks.get(taskId);
     if (!task || completedTasks.includes(taskId)) return;
 
@@ -100,20 +136,25 @@ async function executeTasksInOrder(
       }
     }
 
+    checkAborted(abortSignal);
+
     // Execute this task
     const result = await executeTaskWithTracking(
       task,
       context,
       onProgress,
-      completedTasks
+      completedTasks,
+      abortSignal
     );
 
     results[taskId] = result;
     completedTasks.push(taskId);
   }
 
-  // Execute all tasks
-  await Promise.all(tasks.map(t => executeTask(t.id)));
+  // Execute all tasks sequentially to respect dependencies
+  for (const task of tasks) {
+    await executeTask(task.id);
+  }
 
   return results;
 }
@@ -125,11 +166,13 @@ async function executeTasksInOrder(
 export async function runResearchExecution(
   options: ExecutionOptions
 ): Promise<ResearchReport> {
-  const { question, context = "", onProgress, enableParallelExecution = true } = options;
+  const { question, context = "", onProgress, abortSignal } = options;
   const startTime = Date.now();
 
   try {
     // Step 1: Decompose
+    checkAborted(abortSignal);
+    
     if (onProgress) {
       onProgress({
         status: "decomposing",
@@ -139,6 +182,7 @@ export async function runResearchExecution(
     }
 
     const taskGraph = await decompose({ question, context });
+    checkAborted(abortSignal);
 
     if (onProgress) {
       onProgress({
@@ -150,6 +194,8 @@ export async function runResearchExecution(
     }
 
     // Step 2: Execute subagents
+    checkAborted(abortSignal);
+    
     if (onProgress) {
       onProgress({
         status: "executing",
@@ -162,9 +208,11 @@ export async function runResearchExecution(
     const taskResults = await executeTasksInOrder(
       taskGraph.tasks,
       question,
-      onProgress
+      onProgress,
+      abortSignal
     );
 
+    checkAborted(abortSignal);
     const subagentResults = Object.values(taskResults);
 
     if (onProgress) {
@@ -178,6 +226,8 @@ export async function runResearchExecution(
     }
 
     // Step 3: Validate
+    checkAborted(abortSignal);
+    
     if (onProgress) {
       onProgress({
         status: "validating",
@@ -187,6 +237,7 @@ export async function runResearchExecution(
     }
 
     const validationResults = await validate(subagentResults, question);
+    checkAborted(abortSignal);
 
     // Check for critical validation failures
     const criticalIssues = validationResults.flatMap(v => 
@@ -210,6 +261,8 @@ export async function runResearchExecution(
     }
 
     // Step 4: Synthesize
+    checkAborted(abortSignal);
+    
     if (onProgress) {
       onProgress({
         status: "synthesizing",
@@ -243,7 +296,11 @@ export async function runResearchExecution(
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Research execution error:", error);
+    
+    // Log error in development only
+    if (import.meta.env.DEV) {
+      console.error("Research execution error:", error);
+    }
 
     if (onProgress) {
       onProgress({
