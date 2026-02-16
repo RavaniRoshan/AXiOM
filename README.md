@@ -2,7 +2,8 @@
 
 ### A Research-Grade Reasoning System (Not a Chatbot)
 
-<img width="1683" height="802" alt="image" src="https://github.com/user-attachments/assets/61cb9ba4-b237-45e6-99ad-785a4b0222ad" />
+<img width="1697" height="798" alt="image" src="https://github.com/user-attachments/assets/8a75729e-0493-4114-acce-d3c28067deda" />
+
 
 > **"Build a thinking-first research agent that decomposes problems, runs multi-step reasoning loops, validates its own outputs, and exposes the entire thought pipeline to the user."**
 
